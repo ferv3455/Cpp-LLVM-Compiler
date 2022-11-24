@@ -1,7 +1,19 @@
 #include <cstdio>
 
+#define dfsd 5 + 6
+
 int main()
 {
-	printf("Hello world!\n");
+	for (int i = 0; i < 10; i++)
+	{
+		if (i && 0)
+		{
+			printf("Hello 'world'!\n");
+		}
+		else if (i % 5 == 0)
+		{
+			printf("?\n");
+		}
+	}
 	return 0;
 }
