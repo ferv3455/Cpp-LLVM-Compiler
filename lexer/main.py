@@ -20,36 +20,29 @@ def reco_token(word, line_number):
                 if word[start] == '#':
                     state = 5
                     start += 1
-                    continue
                 elif word in tokenList.op:
                     state = 2
                     start += 1
-                    continue
                 elif word in tokenList.delim:
                     state = 3
                     start += 1
-                    continue
                 elif word[start] in tokenList.constant:
                     state = 4
                     start += 1
-                    continue
                 elif word[start] in tokenList.alphabet:
                     if word in tokenList.reserved:
                         state = 1
                         start += 1
-                        continue
                     else:
                         state = 6
                         start += 1
-                        continue
                 elif word[start] == '/':
                     state = 8
                     start += 1
-                    continue
                 else:
                     state = 7
                     start += 1
-                    continue
+                continue
             case 1:
                 return token_list['reserved'], 'reserved', word
             case 2:
@@ -61,11 +54,10 @@ def reco_token(word, line_number):
                     return token_list['literal'], 'literal', word
                 elif word[start] in tokenList.constant:
                     start += 1
-                    continue
                 else:
                     state = 7
                     start += 1
-                    continue
+                continue
             case 5:
                 if word == '#include':
                     return token_list['include&define'], 'include', word
@@ -74,17 +66,16 @@ def reco_token(word, line_number):
                 else:
                     state = 7
                     start += 1
-                    continue
+                continue
             case 6:
                 if start == len(word):
                     return token_list['identifier'], 'identifier', word
                 elif word[start] in tokenList.alphabet or word[start] in tokenList.constant:
                     start += 1
-                    continue
                 else:
                     state = 7
                     start += 1
-                    continue
+                continue
             case 7:
                 return token_list['error'], 'error', word
             case 8:
@@ -93,7 +84,7 @@ def reco_token(word, line_number):
                 else:
                     state = 7
                     start += 1
-                    continue
+                continue
     return token_list['error'], 'error', word
 
 def main():
