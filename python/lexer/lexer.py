@@ -18,6 +18,7 @@ class Lexer:
             result = rule.apply(text, start)
             if result is not None and result.length > longest_length:
                 token = result
+                longest_length = result.length
         return token
 
 
