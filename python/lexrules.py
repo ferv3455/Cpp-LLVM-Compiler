@@ -17,13 +17,13 @@ FLOAT = r('-').optional() * (c(DIGIT).plus() * r('.') * c(DIGIT).star() +
 CHAR = r('\'') * n('\'').star() * r('\'')
 STRING = r('"') * n('"').star() * r('"')
 
-WHITESPACE = (r(' ') + r('\t') + r('\r') + r('\n')).plus()
+WHITESPACE = r(' ') + r('\t') + r('\r') + r('\n')
 COMMENT = r('//') * n('\n').star() * r('\n')
 
 
 RULES = [
     # Preprocessor directives
-    ('include', r.concat(r('#include'), r(' ').star(),
+    ('include', r.concat(r('#include'), c(WHITESPACE).star(),
                          r('<'), c(ID), (r('.') * c(ID)).optional(), r('>'))),
     ('define', r('#define')),
 
