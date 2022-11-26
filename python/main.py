@@ -10,10 +10,10 @@ def main(args: argparse.Namespace) -> None:
         tokens = generateTokens(text, RULES)
 
         if args.lex:
-            # with open(args.output, "w") as fout:
-            for token in tokens:
-                print("{:24}{}".format(token.name, token.value))
-            # print(token, file=fout)
+            with open(args.output, "w") as fout:
+                for token in tokens:
+                    print("{:24}{}".format(token.name, token.value))
+                    print("{:24}{}".format(token.name, token.value), file=fout)
             return
 
 
