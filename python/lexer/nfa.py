@@ -1,4 +1,4 @@
-from typing import Iterable, List, Set
+from typing import Iterable, Set, Union
 
 
 def match(pattern: str, text: str) -> bool:
@@ -18,22 +18,25 @@ class State:
             self.transition[c].add(state)
 
     def addNegTransition(self, state: 'State', c: str = '') -> None:
-        if c not in self.neg_transition:
-            self.neg_transition[c] = [state]
+        if state not in self.neg_transition:
+            self.neg_transition[state] = {c}
         else:
-            self.neg_transition[c].add(state)
+            self.neg_transition[state].add(c)
 
     def getTransitions(self, c: str = '') -> Set['State']:
-        result = set()
-        for t in self.transition:
-            if match(t, c):
-                result.update(self.transition[t])
+        # print(c, self.neg_transition)
 
-        # trans = self.transition.get(c, list())
         trans = [s for t, s in self.transition.items() if match(t, c)]
-        neg_trans = [s for t, s in self.neg_transition.items()
-                     if not match(t, c)]
-        return set().union(*trans, *neg_trans)
+        if not c:
+            return set().union(*trans)
+
+        neg_trans = [s for s, t in self.neg_transition.items()
+                     if all(map(lambda x: not match(x, c), t))]
+
+        # for state in self.neg_transition:
+        #     print(all(map(lambda x: not match(x, c), state)))
+
+        return set().union(*trans, neg_trans)
 
     def __str__(self) -> str:
         return '<State %s %d>' % (self.name, id(self))
@@ -69,6 +72,9 @@ class NFA:
                 self.states.add(self.end)
                 for c in pattern:
                     self.start.addNegTransition(self.end, c)
+        else:
+            if neg:
+                self.start.addNegTransition(self.end)
 
     def simulate(self, text: str, start: int = 0) -> int:
         length = len(text)
@@ -123,10 +129,18 @@ class NFA:
         return self + other
 
     @classmethod
-    def multipleOr(cls, nfas: Iterable['NFA']) -> 'NFA':
+    def alt(cls, *args: Union[Iterable['NFA'], 'NFA']) -> 'NFA':
         new_nfa = cls()
         new_nfa.end = State('end-or')
         new_nfa.states.add(new_nfa.end)
+
+        nfas = list()
+        for arg in args:
+            try:
+                nfas.extend(arg)
+            except TypeError:
+                nfas.append(arg)
+
         for nfa in nfas:
             new_nfa.start.addTransition(nfa.start)
             nfa.end.addTransition(new_nfa.end)
@@ -146,7 +160,13 @@ class NFA:
         return self * other
 
     @classmethod
-    def multipleConcat(cls, nfas: Iterable['NFA']) -> 'NFA':
+    def concat(cls, *args: Union[Iterable['NFA'], 'NFA']) -> 'NFA':
+        nfas = list()
+        for arg in args:
+            try:
+                nfas.extend(arg)
+            except TypeError:
+                nfas.append(arg)
         iterator = iter(nfas)
 
         try:
@@ -184,7 +204,8 @@ if __name__ == '__main__':
     r = NFA
     n = partial(NFA, neg=True)
 
-    COMMENT = r('//') * n('\n').star() * r('\n')
+    # COMMENT = r('//') * n('\n').star() * r('\n')
+    COMMENT = n().star() * r('y')
 
     text = '// uiygi\n'
     i = COMMENT.simulate(text)

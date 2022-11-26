@@ -1,11 +1,14 @@
 #include <cstdio>
+#include <iostream>
 #include <stdlib.h>
 
 #define dfsd 5 + 6
 
+using namespace std;
+
 int main()
 {
-	for (int i = 0; i < 10.5; i++)
+	for (int i = 0; i < -10.5; i++)
 	{
 		if (i && '\0')
 		{
@@ -14,7 +17,7 @@ int main()
 		}
 		else if (i % 5 == 0)
 		{
-			printf("?\n");
+			std::cout << "?" << std::endl;
 		}
 	}
 	return 0;

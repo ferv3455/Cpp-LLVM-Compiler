@@ -2,15 +2,13 @@ from functools import partial
 import string
 from copy import deepcopy as c
 
-from lexer import NFA
+from lexer import NFA as r
+
+n = partial(r, neg=True)
 
 
-r = NFA
-n = partial(NFA, neg=True)
-
-
-ALPHA = r.multipleOr(r(x) for x in string.ascii_letters)
-DIGIT = r.multipleOr(r(x) for x in string.digits)
+ALPHA = r.alt(r(x) for x in string.ascii_letters)
+DIGIT = r.alt(r(x) for x in string.digits)
 
 ID = (c(ALPHA) + r('_')) * (c(ALPHA) + c(DIGIT) + r('_')).star()
 NUMBER = r('-').optional() * c(DIGIT).plus()
@@ -25,24 +23,29 @@ COMMENT = r('//') * n('\n').star() * r('\n')
 
 RULES = [
     # Preprocessor directives
-    ('include', r.multipleConcat([r('#include'), r(' ').star(),
-                                  r('<'), c(ID), (r('.') * c(ID)).optional(), r('>')])),
+    ('include', r.concat(r('#include'), r(' ').star(),
+                         r('<'), c(ID), (r('.') * c(ID)).optional(), r('>'))),
     ('define', r('#define')),
 
     # Keywords
+    # TODO
 
     # Delimiters
-    ('delimeter', r.multipleOr(r(x) for x in '([{}])')),
+    ('delimeter', r.alt(r(x) for x in '([{}])')),
+    ('semicolon', r(';')),
+    ('comma', r(',')),
+    ('dot', r('.')),
+    ('pointer', r('->')),
+    ('double-colon', r('::')),
 
     # Operators
-    ('bin-op', r.multipleOr(r(x) for x in '-+*/%^=&|')),
-    ('unary-op', r.multipleOr([r('--'), r('++')])),
-    ('rel-op', r.multipleOr([r('>'), r('>='),
-                             r('=='), r('!='), r('<'), r('<=')])),
-    ('logic-op', r.multipleOr([r('&&'), r('||')])),
+    ('bin-op', r.alt(r(x) for x in '-+*/%^=&|')),
+    ('unary-op', r.alt(r('--'), r('++'))),
+    ('rel-op', r.alt(r('>'), r('>='), r('=='), r('!='), r('<'), r('<='))),
+    ('logic-op', r.alt(r('&&'), r('||'))),
 
     # Identifiers
-    ('id', ID),
+    ('id', c(ID)),
 
     # Literals
     ('int-lit', NUMBER),
