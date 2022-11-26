@@ -26,7 +26,7 @@ COMMENT = r('//') * n('\n').star() * r('\n')
 RULES = [
     # Preprocessor directives
     ('include', r.multipleConcat([r('#include'), r(' ').star(),
-                                  r('<'), ID, (r('.') * ID).optional(), r('>')])),
+                                  r('<'), c(ID), (r('.') * c(ID)).optional(), r('>')])),
     ('define', r('#define')),
 
     # Keywords
