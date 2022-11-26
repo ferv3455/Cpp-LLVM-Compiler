@@ -33,8 +33,8 @@ class State:
         neg_trans = [s for s, t in self.neg_transition.items()
                      if all(map(lambda x: not match(x, c), t))]
 
-        # for state in self.neg_transition:
-        #     print(all(map(lambda x: not match(x, c), state)))
+        # for state, cs in self.neg_transition.items():
+        #     print(list(map(lambda x: not match(x, c), cs)))
 
         return set().union(*trans, neg_trans)
 
@@ -74,6 +74,8 @@ class NFA:
                     self.start.addNegTransition(self.end, c)
         else:
             if neg:
+                self.end = State('not-{}'.format(pattern))
+                self.states.add(self.end)
                 self.start.addNegTransition(self.end)
 
     def simulate(self, text: str, start: int = 0) -> int:

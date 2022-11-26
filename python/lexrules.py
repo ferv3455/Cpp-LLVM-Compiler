@@ -11,21 +11,37 @@ ALPHA = r.alt(r(x) for x in string.ascii_letters)
 DIGIT = r.alt(r(x) for x in string.digits)
 
 ID = (c(ALPHA) + r('_')) * (c(ALPHA) + c(DIGIT) + r('_')).star()
-NUMBER = r('-').optional() * c(DIGIT).plus()
-FLOAT = r('-').optional() * (c(DIGIT).plus() * r('.') * c(DIGIT).star() +
-                             c(DIGIT).star() * r('.') * c(DIGIT).plus())
-CHAR = r('\'') * n('\'').star() * r('\'')
-STRING = r('"') * n('"').star() * r('"')
 
-WHITESPACE = r(' ') + r('\t') + r('\r') + r('\n')
+CHAR_PREFIX = r('u') + r('U') + r('L') + r('u8')
+CHAR = c(CHAR_PREFIX).optional() * r('\'') * n('\'').star() * r('\'')
+STRING = c(CHAR_PREFIX).optional() * r('"') * n('"').star() * r('"')
+
+NUMBER_SUFFIX = r.alt((r(x) for x in 'uUlL'), r('ll'), r('LL'))
+NUMBER = r('-').optional() * c(DIGIT).plus() * c(NUMBER_SUFFIX).optional()
+OCT_DIGIT = r.alt(r(x) for x in string.octdigits)
+OCT_NUMBER = r('-').optional() * r('0') * \
+    OCT_DIGIT.plus() * c(NUMBER_SUFFIX).optional()
+HEX_DIGIT = r.alt(r(x) for x in string.hexdigits)
+HEX_NUMBER = r('-').optional() * r('0x') * \
+    HEX_DIGIT.plus() * c(NUMBER_SUFFIX).optional()
+
+FLOAT_SUFFIX = r.alt(r(x) for x in 'fFlL')
+FLOAT = r('-').optional() * \
+    (c(DIGIT).plus() * r('.') * c(DIGIT).star() + c(DIGIT).star() * r('.') * c(DIGIT).plus()) * \
+    (r('e') * r('-').optional() * c(DIGIT).plus()).optional() * \
+    FLOAT_SUFFIX.optional()
+
+MACRO = r('#') * n('\n').star() * r('\n')
 COMMENT = r('//') * n('\n').star() * r('\n')
+WHITESPACE = r.alt(r(x) for x in string.whitespace)
 
 
 RULES = [
     # Preprocessor directives
-    ('include', r.concat(r('#include'), c(WHITESPACE).star(),
-                         r('<'), c(ID), (r('.') * c(ID)).optional(), r('>'))),
-    ('define', r('#define')),
+    # ('include', r.concat(r('#include'), c(WHITESPACE).star(),
+    #                      r('<'), c(ID), (r('.') * c(ID)).optional(), r('>'))),
+    # ('define', r('#define')),
+    ('macro', MACRO),
 
     # Keywords
     ('if', r('if')),
@@ -66,24 +82,35 @@ RULES = [
     ('inline', r('inline')),
     ('restrict', r('restrict')),
 
-    # Delimiters
-    ('delimeter', r.alt(r(x) for x in '([{}])')),
-    ('semicolon', r(';')),
+    # Punctuators
+    ('parenthesis', r.alt(r(x) for x in '()')),
+    ('bracket', r.alt(r(x) for x in '[]')),
+    ('brace', r.alt(r(x) for x in '{}')),
     ('comma', r(',')),
-    ('dot', r('.')),
-    ('pointer', r('->')),
+    ('semicolon', r(';')),
     ('double-colon', r('::')),
+    ('colon', r(':')),
+    ('backslash', r('\\')),
 
     # Operators
-    ('bin-op', r.alt(r(x) for x in '-+*/%^=&|')),
-    ('unary-op', r.alt(r('--'), r('++'))),
-    ('rel-op', r.alt(r('>'), r('>='), r('=='), r('!='), r('<'), r('<='))),
-    ('logic-op', r.alt(r('&&'), r('||'))),
+    ('arithmetic-op', r.alt(r(x) for x in '+-*/%')),
+    ('relational-op', r.alt(r('>'), r('>='), r('=='), r('!='), r('<'), r('<='))),
+    ('logical-op', r.alt(r('&&'), r('||'), r('!'))),
+    ('assignment-op', r('=')),
+    ('arithm-assign-op', r.alt(r('+='), r('-='), r('*='), r('/='), r('%='))),
+    ('bit-assign-op',  r.alt(r('<<='), r('>>='), r('&='), r('^='), r('|='))),
+    ('increment-op', r.alt(r('--'), r('++'))),
+    ('member-op', r('.')),
+    ('ptr-member-op', r('->')),
+    ('conditional-op', r('?')),
+    ('bit-op', r.alt((r(x) for x in '~&^|'), r('<<'), r('>>'))),
 
     # Identifiers
     ('id', c(ID)),
 
     # Literals
+    ('hex-lit', HEX_NUMBER),
+    ('oct-lit', OCT_NUMBER),
     ('int-lit', NUMBER),
     ('float-lit', FLOAT),
     ('char-lit', CHAR),
@@ -91,5 +118,8 @@ RULES = [
 
     # Ignore whitespaces and comments
     ('comment', COMMENT, True),
-    ('space', WHITESPACE, True)
+    ('space', WHITESPACE, True),
+
+    # Catch all errors
+    ('error', n()),
 ]

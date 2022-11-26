@@ -8,16 +8,18 @@ using namespace std;
 
 int main()
 {
-	for (int i = 0; i < -10.5; i++)
+	for (int i = 0x1; i < -10.5F; i += 02)
 	{
+		// try error: @
 		if (i && '\0')
 		{
+			float a = -.4e010L;
 			// print here
-			printf("Hello 'world'!\n");
+			printf(u8"Hello 'world'!\n");
 		}
 		else if (i % 5 == 0)
 		{
-			std::cout << "?" << std::endl;
+			std::cout << U'?' << std::endl;
 		}
 	}
 	return 0;
