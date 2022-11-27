@@ -82,7 +82,8 @@ extern int yydebug;
     INT_LIT = 288,
     FLOAT_LIT = 289,
     STR_LIT = 290,
-    UNKNOWN = 291
+    CHAR_LIT = 291,
+    UNKNOWN = 292
   };
 #endif
 /* Tokens.  */
@@ -119,7 +120,8 @@ extern int yydebug;
 #define INT_LIT 288
 #define FLOAT_LIT 289
 #define STR_LIT 290
-#define UNKNOWN 291
+#define CHAR_LIT 291
+#define UNKNOWN 292
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -133,7 +135,7 @@ union YYSTYPE
     double double_val;
     char *str_val;
 
-#line 137 "./tmp/y.tab.h"
+#line 139 "./tmp/y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

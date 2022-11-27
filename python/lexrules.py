@@ -38,13 +38,10 @@ WHITESPACE = r.alt(r(x) for x in string.whitespace)
 
 RULES = [
     # Preprocessor directives
-    # ('include', r.concat(r('#include'), c(WHITESPACE).star(),
-    #                      r('<'), c(ID), (r('.') * c(ID)).optional(), r('>'))),
-    # ('define', r('#define')),
     ('macro', MACRO),
 
     # Keywords
-    ## number
+    #   number
     ('int', r('int')),
     ('float', r('float')),
     ('double', r('double')),
@@ -52,78 +49,78 @@ RULES = [
     ('short', r('short')),
     ('unsigned', r('unsigned')),
     ('signed', r('signed')),
-    ## character
+    #   character
     ('char', r('char')),
     ('wchar_t', r('wchar_t')),
     ('char16_t', r('char16_t')),
     ('char32_t', r('char32_t')),
-    ## boolean & enum
+    #   boolean & enum
     ('bool', r('bool')),
     ('enum', r('enum')),
     ('true', r('true')),
     ('false', r('false')),
-    ## cast
+    #   cast
     ('static_cast', r('static_cast')),
     ('dynamic_cast', r('dynamic_cast')),
     ('const_cast', r('const_cast')),
     ('reinterpret_cast', r('reinterpret_cast')),
-    ## type modifier
+    #   type modifier
     ('const', r('const')),
     ('volatile', r('volatile')),
     ('mutable', r('mutable')),
     ('constexpr', r('constexpr')),
-    ## class and object
+    #   class and object
     ('class', r('class')),
     ('struct', r('struct')),
     ('union', r('union')),
     ('this', r('this')),
     ('new', r('new')),
     ('delete', r('delete')),
-    ## class member restriction
+    #   class member restriction
     ('public', r('public')),
     ('protected', r('protected')),
     ('private', r('private')),
     ('override', r('override')),
     ('final', r('final')),
-    ## function related
+    #   function related
     ('void', r('void')),
     ('inline', r('inline')),
     ('explicit', r('explicit')),
     ('friend', r('friend')),
     ('virtual', r('virtual')),
     ('return', r('return')),
-    ## memory designation
+    #   memory designation
     ('static', r('static')),
     ('thread_local', r('thread_local')),
     ('extern', r('extern')),
     ('decltype', r('decltype')),
-    ## condition statement
+    #   condition statement
     ('if', r('if')),
     ('else', r('else')),
     ('switch', r('switch')),
     ('case', r('case')),
     ('default', r('default')),
-    ## loop statement
+    #   loop statement
     ('while', r('while')),
     ('do', r('do')),
     ('for', r('for')),
     ('break', r('break')),
     ('continue', r('continue')),
-    ## type related
+    #   type related
     ('typename', r('typename')),
     ('typeid', r('typeid')),
     ('sizeof', r('sizeof')),
     ('typedef', r('typedef')),
-    ## alignment
+    #   alignment
     ('alignof', r('alignof')),
     ('alignas', r('alignas')),
-    ## debug
+    #   debug
     ('catch', r('catch')),
     ('try', r('try')),
     ('throw', r('throw')),
     ('static_assert', r('static_assert')),
     ('noexcept', r('noexcept')),
-    ## other
+    #   other
     ('namespace', r('namespace')),
     ('using', r('using')),
     ('template', r('template')),

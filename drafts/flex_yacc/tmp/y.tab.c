@@ -155,7 +155,8 @@ extern int yydebug;
     INT_LIT = 288,
     FLOAT_LIT = 289,
     STR_LIT = 290,
-    UNKNOWN = 291
+    CHAR_LIT = 291,
+    UNKNOWN = 292
   };
 #endif
 /* Tokens.  */
@@ -192,7 +193,8 @@ extern int yydebug;
 #define INT_LIT 288
 #define FLOAT_LIT 289
 #define STR_LIT 290
-#define UNKNOWN 291
+#define CHAR_LIT 291
+#define UNKNOWN 292
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -206,7 +208,7 @@ union YYSTYPE
     double double_val;
     char *str_val;
 
-#line 210 "./tmp/y.tab.c"
+#line 212 "./tmp/y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -528,7 +530,7 @@ union yyalloc
 #define YYLAST   3
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  37
+#define YYNTOKENS  38
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  3
 /* YYNRULES -- Number of rules.  */
@@ -537,7 +539,7 @@ union yyalloc
 #define YYNSTATES  7
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   291
+#define YYMAXUTOK   292
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -578,7 +580,7 @@ static const yytype_int8 yytranslate[] =
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36
+      35,    36,    37
 };
 
 #if YYDEBUG
@@ -599,7 +601,7 @@ static const char *const yytname[] =
   "FALSE", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET",
   "LEFT_BRACE", "RIGHT_BRACE", "SEMICOLON", "COMMA", "DOT", "POINTER",
   "DB_COLON", "BIN_OP", "UN_OP", "REL_OP", "LOG_OP", "ID", "INT_LIT",
-  "FLOAT_LIT", "STR_LIT", "UNKNOWN", "$accept", "stm", "exp", YY_NULLPTR
+  "FLOAT_LIT", "STR_LIT", "CHAR_LIT", "UNKNOWN", "$accept", "stm", "exp", YY_NULLPTR
 };
 #endif
 
@@ -611,7 +613,7 @@ static const yytype_int16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291
+     285,   286,   287,   288,   289,   290,   291,   292
 };
 # endif
 
@@ -669,13 +671,13 @@ static const yytype_int8 yycheck[] =
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    33,    38,    39,     0,    28,    33
+       0,    33,    39,    40,     0,    28,    33
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    37,    38,    39,    39
+       0,    38,    39,    40,    40
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1381,7 +1383,7 @@ yyreduce:
         {
             printf("%d\n", (yyvsp[0].int_val));
         }
-#line 1385 "./tmp/y.tab.c"
+#line 1387 "./tmp/y.tab.c"
     break;
 
   case 3:
@@ -1392,17 +1394,17 @@ yyreduce:
             else if ((yyvsp[-1].char_val) == '*') (yyval.int_val) = (yyvsp[-2].int_val) * (yyvsp[0].int_val);
             else if ((yyvsp[-1].char_val) == '/') (yyval.int_val) = (yyvsp[-2].int_val) / (yyvsp[0].int_val);
         }
-#line 1396 "./tmp/y.tab.c"
+#line 1398 "./tmp/y.tab.c"
     break;
 
   case 4:
 #line 68 "./src/parser.y"
                                   { (yyval.int_val) = (yyvsp[0].int_val); }
-#line 1402 "./tmp/y.tab.c"
+#line 1404 "./tmp/y.tab.c"
     break;
 
 
-#line 1406 "./tmp/y.tab.c"
+#line 1408 "./tmp/y.tab.c"
 
       default: break;
     }

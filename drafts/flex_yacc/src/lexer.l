@@ -12,6 +12,7 @@ id          [A-Za-z_][A-Za-z_0-9]*
 number      -?[0-9]+
 float       -?[0-9]+\.[0-9]*
 string      "\"".*"\""
+char        "'".*"'"
 
 %%
  /* ============= ADD TRANSLATION RULES BELOW ============= */
@@ -73,6 +74,7 @@ string      "\"".*"\""
 {number}                    { yylval.int_val = atoi(yytext); printf("(literal) %d\n", yylval.int_val); return INT_LIT; }
 {float}                     { yylval.double_val = atof(yytext); printf("(literal) %f\n", yylval.double_val); return FLOAT_LIT; }
 {string}                    { yylval.str_val = strdup(yytext); printf("(literal) %s\n", yylval.str_val); return STR_LIT; }
+{char}                      { yylval.str_val = strdup(yytext); printf("(literal) %s\n", yylval.str_val); return CHAR_LIT; }
 
  /* Ignore comments and whitespace */
 \/\/[^\n]*                  ;

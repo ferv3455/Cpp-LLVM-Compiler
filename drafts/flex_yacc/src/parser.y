@@ -40,7 +40,7 @@ extern FILE *yyin;
 %token ID
 %token <int_val> INT_LIT 
 %token <double_val> FLOAT_LIT
-%token <str_val> STR_LIT
+%token <str_val> STR_LIT CHAR_LIT
 
 /* Unknown tokens */
 %token UNKNOWN
