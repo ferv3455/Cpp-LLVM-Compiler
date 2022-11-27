@@ -28,7 +28,7 @@ HEX_NUMBER = r('-').optional() * r('0x') * \
 FLOAT_SUFFIX = r.alt(r(x) for x in 'fFlL')
 FLOAT = r('-').optional() * \
     (c(DIGIT).plus() * r('.') * c(DIGIT).star() + c(DIGIT).star() * r('.') * c(DIGIT).plus()) * \
-    (r('e') * r('-').optional() * c(DIGIT).plus()).optional() * \
+    ((r('e') + r('E')) * r('-').optional() * c(DIGIT).plus()).optional() * \
     FLOAT_SUFFIX.optional()
 
 MACRO = r('#') * n('\n').star() * r('\n')
