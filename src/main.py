@@ -18,7 +18,7 @@ def main(args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='test')
+    parser = argparse.ArgumentParser(description='Cpp-LLVM Compiler')
     parser.add_argument('input', type=str, help='input source code')
     parser.add_argument('-o', '--output', type=str,
                         default='output', help='output file')
