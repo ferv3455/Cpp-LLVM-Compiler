@@ -2,7 +2,7 @@ from functools import partial
 import string
 from copy import deepcopy as c
 
-from lexer import NFA as r
+from mycompiler.lexer import NFA as r
 
 n = partial(r, neg=True)
 
