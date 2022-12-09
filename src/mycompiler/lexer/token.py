@@ -10,11 +10,8 @@ class Token:
         self.length = length
         self.ignore = ignore
 
-    def __str__(self) -> str:
-        return "<Token {} {}>".format(self.name, self.value)
-
     def __repr__(self) -> str:
-        return str(self)
+        return "<Token {} {}>".format(self.name, self.value)
 
 
 class TokenRule:

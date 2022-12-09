@@ -26,6 +26,11 @@ class Lexer:
             if result is not None and result.length > longest_length:
                 token = result
                 longest_length = result.length
+
+        if token is None:
+            raise SyntaxError(
+                "No lexical rules can be applied: {}".format(text[start:]))
+
         return token
 
     def __call__(self, text: str, start: int = 0) -> Token:
@@ -43,11 +48,6 @@ def generateTokens(text: str, rules: List[tuple] = None):
 
     while index < length:
         token = lexer(text, index)
-
-        if token is None:
-            raise Exception("No rules can be applied in lexical analysis")
-            # index += 1
-            # continue
 
         if not token.ignore:
             yield token

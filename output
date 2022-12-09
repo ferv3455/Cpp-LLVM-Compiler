@@ -1,0 +1,19 @@
+sentence
+ ├ sentence
+ |  ├ sentence
+ |  |  └ sub
+ |  |     └ int-lit::4
+ |  ├ arithmetic-op::+
+ |  └ sub
+ |     ├ parenthesis::(
+ |     ├ sentence
+ |     |  ├ sentence
+ |     |  |  └ sub
+ |     |  |     └ int-lit::5
+ |     |  ├ arithmetic-op::+
+ |     |  └ sub
+ |     |     └ int-lit::4
+ |     └ parenthesis::)
+ ├ arithmetic-op::+
+ └ sub
+    └ int-lit::7

@@ -30,8 +30,8 @@ def main(args: argparse.Namespace) -> None:
             ast = generateAST(tokens)
         if args.parse:
             with open(args.output, "w") as fout:
-                print(ast)
-                print(ast, file=fout)
+                ast.printAST()
+                ast.printAST(file=fout)
             return
 
 

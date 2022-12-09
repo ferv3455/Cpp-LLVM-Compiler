@@ -5,25 +5,25 @@ def match(pattern: str, text: str) -> bool:
     return text == pattern
 
 
-class State:
+class NFAState:
     def __init__(self, name: str = '') -> None:
         self.name = name
         self.transition = dict()
         self.neg_transition = dict()
 
-    def addTransition(self, state: 'State', c: str = '') -> None:
+    def addTransition(self, state: 'NFAState', c: str = '') -> None:
         if c not in self.transition:
             self.transition[c] = {state}
         else:
             self.transition[c].add(state)
 
-    def addNegTransition(self, state: 'State', c: str = '') -> None:
+    def addNegTransition(self, state: 'NFAState', c: str = '') -> None:
         if state not in self.neg_transition:
             self.neg_transition[state] = {c}
         else:
             self.neg_transition[state].add(c)
 
-    def getTransitions(self, c: str = '') -> Set['State']:
+    def getTransitions(self, c: str = '') -> Set['NFAState']:
         # print(c, self.neg_transition)
 
         trans = [s for t, s in self.transition.items() if match(t, c)]
@@ -38,14 +38,11 @@ class State:
 
         return set().union(*trans, neg_trans)
 
-    def __str__(self) -> str:
-        return '<State %s %d>' % (self.name, id(self))
-
     def __repr__(self) -> str:
-        return str(self)
+        return '<NFAState %s %d>' % (self.name, id(self))
 
 
-def updateEpsilonClosure(state: State, states: Set[State]):
+def updateEpsilonClosure(state: NFAState, states: Set[NFAState]):
     for next_state in state.getTransitions():
         if next_state not in states:
             states.add(next_state)
@@ -55,26 +52,26 @@ def updateEpsilonClosure(state: State, states: Set[State]):
 class NFA:
     def __init__(self, pattern: str = None, neg: bool = False) -> None:
         self.states = set()
-        self.start = State('ε')
+        self.start = NFAState('ε')
         self.states.add(self.start)
         self.end = self.start
         if pattern:
             if not neg:
                 last = self.start
                 for c in pattern:
-                    new_state = State(c)
+                    new_state = NFAState(c)
                     self.states.add(new_state)
                     last.addTransition(new_state, c)
                     last = new_state
                 self.end = last
             else:
-                self.end = State('not-{}'.format(pattern))
+                self.end = NFAState('not-{}'.format(pattern))
                 self.states.add(self.end)
                 for c in pattern:
                     self.start.addNegTransition(self.end, c)
         else:
             if neg:
-                self.end = State('not-{}'.format(pattern))
+                self.end = NFAState('not-{}'.format(pattern))
                 self.states.add(self.end)
                 self.start.addNegTransition(self.end)
 
@@ -89,7 +86,7 @@ class NFA:
         while states and i < length:
             c = text[i]
 
-            # State transition
+            # NFAState transition
             new_states = set()
             for state in states:
                 new_states.update(state.getTransitions(c))
@@ -119,7 +116,7 @@ class NFA:
         new_nfa = type(self)()
         new_nfa.start.addTransition(self.start)
         new_nfa.start.addTransition(other.start)
-        new_nfa.end = State('end-or')
+        new_nfa.end = NFAState('end-or')
         self.end.addTransition(new_nfa.end)
         other.end.addTransition(new_nfa.end)
         new_nfa.states.update(self.states)
@@ -133,7 +130,7 @@ class NFA:
     @classmethod
     def alt(cls, *args: Union[Iterable['NFA'], 'NFA']) -> 'NFA':
         new_nfa = cls()
-        new_nfa.end = State('end-or')
+        new_nfa.end = NFAState('end-or')
         new_nfa.states.add(new_nfa.end)
 
         nfas = list()
