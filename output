@@ -1,28 +1,59 @@
 SENT-E
- ├ SENT-E
- |  ├ SENT-E
- |  |  └ SENT-T
- |  |     └ SENT-F
- |  |        └ id::test1
- |  ├ arithmetic-op::+
- |  └ SENT-T
- |     ├ SENT-T
- |     |  └ SENT-F
- |     |     └ id::test2
- |     ├ arithmetic-op::*
- |     └ SENT-F
- |        ├ parenthesis::(
- |        ├ SENT-E
- |        |  ├ SENT-E
- |        |  |  └ SENT-T
- |        |  |     └ SENT-F
- |        |  |        └ int-lit::67
- |        |  ├ arithmetic-op::+
- |        |  └ SENT-T
- |        |     └ SENT-F
- |        |        └ id::test3
- |        └ parenthesis::)
- ├ arithmetic-op::+
- └ SENT-T
-    └ SENT-F
-       └ int-lit::92
+├─ int::int
+├─ id::main
+├─ parenthesis::(
+├─ parenthesis::)
+└─ SENT-T
+   ├─ brace::{
+   ├─ SENT-P
+   │  ├─ SENT-P
+   │  │  ├─ SENT-P
+   │  │  │  └─ SENT-Q
+   │  │  │     └─ SENT-I
+   │  │  │        ├─ int::int
+   │  │  │        ├─ id::test1
+   │  │  │        ├─ assignment-op::=
+   │  │  │        ├─ EXPR-E
+   │  │  │        │  └─ EXPR-T
+   │  │  │        │     └─ EXPR-F
+   │  │  │        │        └─ int-lit::23
+   │  │  │        └─ semicolon::;
+   │  │  └─ SENT-Q
+   │  │     └─ SENT-I
+   │  │        ├─ int::int
+   │  │        ├─ id::test2
+   │  │        ├─ assignment-op::=
+   │  │        ├─ EXPR-E
+   │  │        │  ├─ EXPR-E
+   │  │        │  │  └─ EXPR-T
+   │  │        │  │     ├─ EXPR-T
+   │  │        │  │     │  └─ EXPR-F
+   │  │        │  │     │     └─ id::test1
+   │  │        │  │     ├─ arithmetic-op::*
+   │  │        │  │     └─ EXPR-F
+   │  │        │  │        ├─ parenthesis::(
+   │  │        │  │        ├─ EXPR-E
+   │  │        │  │        │  ├─ EXPR-E
+   │  │        │  │        │  │  └─ EXPR-T
+   │  │        │  │        │  │     └─ EXPR-F
+   │  │        │  │        │  │        └─ int-lit::67
+   │  │        │  │        │  ├─ arithmetic-op::+
+   │  │        │  │        │  └─ EXPR-T
+   │  │        │  │        │     └─ EXPR-F
+   │  │        │  │        │        └─ id::test1
+   │  │        │  │        └─ parenthesis::)
+   │  │        │  ├─ arithmetic-op::+
+   │  │        │  └─ EXPR-T
+   │  │        │     └─ EXPR-F
+   │  │        │        └─ int-lit::92
+   │  │        └─ semicolon::;
+   │  └─ SENT-Q
+   │     └─ SENT-A
+   │        ├─ id::test1
+   │        ├─ assignment-op::=
+   │        ├─ EXPR-E
+   │        │  └─ EXPR-T
+   │        │     └─ EXPR-F
+   │        │        └─ id::test2
+   │        └─ semicolon::;
+   └─ brace::}

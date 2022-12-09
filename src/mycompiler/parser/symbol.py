@@ -38,8 +38,8 @@ class Symbol:
             self.symbols[-1].printAST([True], **kwargs)
             return
 
-        prefix_list = [('   ' if b else ' | ') for b in end[:-1]] + \
-            [' └ ' if end[-1] else ' ├ ']
+        prefix_list = [('   ' if b else '│  ') for b in end[:-1]] + \
+            ['└─ ' if end[-1] else '├─ ']
         print('{}{}'.format(''.join(prefix_list), self), **kwargs)
         if not self.terminal:
             for symbol in self.symbols[:-1]:
