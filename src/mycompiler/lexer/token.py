@@ -4,7 +4,7 @@ from .nfa import NFA
 
 
 class Token:
-    def __init__(self, name: str, value: Any, length: int, ignore: bool = False) -> None:
+    def __init__(self, name: str, value: Any = None, length: int = 0, ignore: bool = False) -> None:
         self.name = name
         self.value = value
         self.length = length

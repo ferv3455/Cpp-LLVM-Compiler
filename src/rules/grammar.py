@@ -1,19 +1,25 @@
 GRAMMAR = {
     "non-terminals": [
-        "sentence",
-        "sub",
+        "SENT-E",
+        "SENT-T",
+        "SENT-F",
     ],
     "terminals": [
         "parenthesis::(",
         "parenthesis::)",
         "int-lit",
+        "id",
         "arithmetic-op::+",
+        "arithmetic-op::*",
     ],
-    "start": "sentence",
+    "start": "SENT-E",
     "derivations": [
-        ("sentence", "sentence arithmetic-op::+ sub"),
-        ("sentence", "sub"),
-        ("sub", "int-lit"),
-        ("sub", "parenthesis::( sentence parenthesis::)"),
+        ("SENT-E", "SENT-E arithmetic-op::+ SENT-T"),
+        ("SENT-E", "SENT-T"),
+        ("SENT-T", "SENT-T arithmetic-op::* SENT-F"),
+        ("SENT-T", "SENT-F"),
+        ("SENT-F", "parenthesis::( SENT-E parenthesis::)"),
+        ("SENT-F", "id"),
+        ("SENT-F", "int-lit"),
     ]
 }

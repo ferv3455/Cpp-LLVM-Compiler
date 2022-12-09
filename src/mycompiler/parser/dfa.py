@@ -138,14 +138,15 @@ class ViablePrefixDFA:
 
         # S' -> S: action[i, $] = accept
         for item in items:
-            if item.derivation.id == 0 and token is None:
+            if item.derivation.id == 0 and self.grammar.symbols['#$'].matchToken(token):
                 return Action(0, 0)
 
         # X -> a. && t in follow(X) && X != S': action[i, t] = reduce
         for item in items:
             if item.nextSymbol() is None and item.derivation.id != 0:
-                # TODO: check follow
-                return Action(2, item.derivation.id)
+                for symbol in self.grammar.followSets[item.derivation.lhs]:
+                    if symbol.matchToken(token):
+                        return Action(2, item.derivation.id)
 
         # X -> a.tb && go[i, t] = k: action[i, t] = shift k
         for item in items:

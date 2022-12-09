@@ -1,4 +1,5 @@
 from copy import deepcopy
+import pickle
 from typing import Dict, Generator
 from collections import deque
 
@@ -6,18 +7,28 @@ from .dfa import ViablePrefixDFA
 from .symbol import Symbol
 from .grammar import Grammar
 from ..utils import IteratorWrapper
+from ..lexer import Token
 
 
 class Parser:
     def __init__(self, grammar: Dict = None) -> None:
-        self.grammar = Grammar(grammar)
-        # print(self.grammar)
-        self.dfa = ViablePrefixDFA(self.grammar)
+        if grammar is not None:
+            self.grammar = Grammar(grammar)
+            self.dfa = ViablePrefixDFA(self.grammar)
+            with open("./tmp/grammar.pkl", "wb") as fp:
+                pickle.dump(self.grammar, fp)
+            with open("./tmp/dfa.pkl", "wb") as fp:
+                pickle.dump(self.dfa, fp)
+        else:
+            with open("./tmp/grammar.pkl", "rb") as fp:
+                self.grammar = pickle.load(fp)
+            with open("./tmp/dfa.pkl", "rb") as fp:
+                self.dfa = pickle.load(fp)
 
     def parse(self, tokens: IteratorWrapper) -> Symbol:
         stack = deque([(Symbol(True, name="#dummy"), 0)])
         while True:
-            token = tokens.peek()    # could be None
+            token = tokens.peek()
             # print(token)
             action = self.dfa.action(stack[-1][1], token)
             # print(action)
@@ -53,5 +64,5 @@ def generateAST(token_gen: Generator, grammar: Dict = None):
     else:
         parser = Parser(grammar)
 
-    tokens = IteratorWrapper(token_gen)
+    tokens = IteratorWrapper(token_gen, Token('#$'))
     return parser(tokens)
