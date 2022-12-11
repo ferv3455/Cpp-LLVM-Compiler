@@ -1,4 +1,5 @@
 import argparse
+import json
 
 from mycompiler.lexer import generateTokens
 from mycompiler.parser import generateAST
@@ -31,7 +32,8 @@ def main(args: argparse.Namespace) -> None:
         if args.parse:
             with open(args.output, "w") as fout:
                 ast.printAST()
-                ast.printAST(file=fout)
+                json.dump(ast.toDict(), fout)
+                # ast.printAST(file=fout)
             return
 
 

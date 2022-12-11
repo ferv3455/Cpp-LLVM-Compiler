@@ -52,6 +52,18 @@ class Symbol:
                 symbol.printAST(end + [False], **kwargs)
             self.symbols[-1].printAST(end + [True], **kwargs)
 
+    def toDict(self):
+        if self.terminal:
+            return {
+                "type": self.name,
+                "content": self.value,
+            }
+        else:
+            return {
+                "type": self.name,
+                "children": [s.toDict() for s in self.symbols]
+            }
+
     def matchToken(self, token: Token) -> bool:
         if not self.terminal:
             return False
