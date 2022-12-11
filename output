@@ -1,14 +1,11 @@
 PROGRAM
 ├─ MACROS
-│  ├─ macro::#include <cstdio>
+│  ├─ macro::#include<iostream>
 
 │  └─ MACROS
-│     ├─ macro::#include <iostream>
+│     ├─ macro::#include <stack>
 
-│     └─ MACROS
-│        ├─ macro::#include <stdlib.h>
-
-│        └─ macro::#define dfsd 5 + 6
+│     └─ macro::#include <cstring>
 
 └─ STATEMENTS
    ├─ DECL-ST
@@ -17,99 +14,565 @@ PROGRAM
    │  │  ├─ namespace::namespace
    │  │  └─ id::std
    │  └─ semicolon::;
-   └─ FUNC-ST
-      ├─ int::int
-      ├─ id::main
-      ├─ PARAM-LIST
-      │  ├─ parenthesis::(
-      │  └─ parenthesis::)
-      └─ CMPD-ST
-         ├─ brace::{
-         ├─ STATEMENTS
-         │  ├─ ITER-ST
-         │  │  ├─ for::for
-         │  │  ├─ parenthesis::(
-         │  │  ├─ FOR-COND
-         │  │  │  ├─ DECL
-         │  │  │  │  ├─ int::int
-         │  │  │  │  └─ ID-DECL
-         │  │  │  │     ├─ id::i
-         │  │  │  │     ├─ assignment-op::=
-         │  │  │  │     └─ hex-lit::0x1
-         │  │  │  ├─ semicolon::;
-         │  │  │  ├─ EXPR-L10
-         │  │  │  │  ├─ id::i
-         │  │  │  │  ├─ relational-op::<
-         │  │  │  │  └─ float-lit::-10.5F
-         │  │  │  ├─ semicolon::;
-         │  │  │  └─ EXPR-L16
-         │  │  │     ├─ id::i
-         │  │  │     ├─ arithm-assign-op::+=
-         │  │  │     └─ oct-lit::02
-         │  │  ├─ parenthesis::)
-         │  │  └─ CMPD-ST
-         │  │     ├─ brace::{
-         │  │     ├─ SEL-ST
-         │  │     │  ├─ if::if
-         │  │     │  ├─ parenthesis::(
-         │  │     │  ├─ EXPR-L14
-         │  │     │  │  ├─ id::i
-         │  │     │  │  ├─ logical-op::&&
-         │  │     │  │  └─ char-lit::'\0'
-         │  │     │  ├─ parenthesis::)
-         │  │     │  ├─ CMPD-ST
-         │  │     │  │  ├─ brace::{
-         │  │     │  │  ├─ STATEMENTS
-         │  │     │  │  │  ├─ DECL-ST
-         │  │     │  │  │  │  ├─ DECL
-         │  │     │  │  │  │  │  ├─ float::float
-         │  │     │  │  │  │  │  └─ ID-DECL
-         │  │     │  │  │  │  │     ├─ id::a
-         │  │     │  │  │  │  │     ├─ assignment-op::=
-         │  │     │  │  │  │  │     └─ float-lit::-.4e010L
-         │  │     │  │  │  │  └─ semicolon::;
-         │  │     │  │  │  └─ EXPR-ST
-         │  │     │  │  │     ├─ EXPR-L2
-         │  │     │  │  │     │  ├─ id::printf
-         │  │     │  │  │     │  └─ ARG-LIST
-         │  │     │  │  │     │     ├─ parenthesis::(
-         │  │     │  │  │     │     ├─ str-lit::u8"Hello 'world'!\n"
-         │  │     │  │  │     │     └─ parenthesis::)
-         │  │     │  │  │     └─ semicolon::;
-         │  │     │  │  └─ brace::}
-         │  │     │  ├─ else::else
-         │  │     │  └─ SEL-ST
-         │  │     │     ├─ if::if
-         │  │     │     ├─ parenthesis::(
-         │  │     │     ├─ EXPR-L10
-         │  │     │     │  ├─ EXPR-L5
-         │  │     │     │  │  ├─ id::i
-         │  │     │     │  │  ├─ arithmetic-op::%
-         │  │     │     │  │  └─ int-lit::5
-         │  │     │     │  ├─ relational-op::==
-         │  │     │     │  └─ int-lit::0
-         │  │     │     ├─ parenthesis::)
-         │  │     │     └─ CMPD-ST
-         │  │     │        ├─ brace::{
-         │  │     │        ├─ EXPR-ST
-         │  │     │        │  ├─ EXPR-L7
-         │  │     │        │  │  ├─ EXPR-L7
-         │  │     │        │  │  │  ├─ ID
-         │  │     │        │  │  │  │  ├─ id::std
-         │  │     │        │  │  │  │  ├─ double-colon::::
-         │  │     │        │  │  │  │  └─ id::cout
-         │  │     │        │  │  │  ├─ bit-op::<<
-         │  │     │        │  │  │  └─ char-lit::U'?'
-         │  │     │        │  │  ├─ bit-op::<<
-         │  │     │        │  │  └─ ID
-         │  │     │        │  │     ├─ id::std
-         │  │     │        │  │     ├─ double-colon::::
-         │  │     │        │  │     └─ id::endl
-         │  │     │        │  └─ semicolon::;
-         │  │     │        └─ brace::}
-         │  │     └─ brace::}
-         │  └─ JMP-ST
-         │     ├─ return::return
-         │     ├─ int-lit::0
-         │     └─ semicolon::;
-         └─ brace::}
+   └─ STATEMENTS
+      ├─ DECL-ST
+      │  ├─ DECL
+      │  │  ├─ TYPE-SPECS
+      │  │  │  ├─ id::stack
+      │  │  │  └─ TYPE-SPEC
+      │  │  │     ├─ relational-op::<
+      │  │  │     ├─ char::char
+      │  │  │     └─ relational-op::>
+      │  │  └─ id::operations
+      │  └─ semicolon::;
+      └─ STATEMENTS
+         ├─ DECL-ST
+         │  ├─ DECL
+         │  │  ├─ TYPE-SPECS
+         │  │  │  ├─ id::stack
+         │  │  │  └─ TYPE-SPEC
+         │  │  │     ├─ relational-op::<
+         │  │  │     ├─ float::float
+         │  │  │     └─ relational-op::>
+         │  │  └─ id::operands
+         │  └─ semicolon::;
+         └─ STATEMENTS
+            ├─ DECL-ST
+            │  ├─ DECL
+            │  │  ├─ float::float
+            │  │  └─ DECLARATORS
+            │  │     ├─ id::l_operand
+            │  │     ├─ comma::,
+            │  │     └─ DECLARATORS
+            │  │        ├─ id::r_operand
+            │  │        ├─ comma::,
+            │  │        └─ id::result
+            │  └─ semicolon::;
+            └─ STATEMENTS
+               ├─ DECL-ST
+               │  ├─ DECL
+               │  │  ├─ char::char
+               │  │  └─ id::operation
+               │  └─ semicolon::;
+               └─ STATEMENTS
+                  ├─ FUNC-ST
+                  │  ├─ void::void
+                  │  ├─ id::cal
+                  │  ├─ PARAM-LIST
+                  │  │  ├─ parenthesis::(
+                  │  │  └─ parenthesis::)
+                  │  └─ CMPD-ST
+                  │     ├─ brace::{
+                  │     ├─ STATEMENTS
+                  │     │  ├─ EXPR-ST
+                  │     │  │  ├─ EXPR-L16
+                  │     │  │  │  ├─ id::operation
+                  │     │  │  │  ├─ assignment-op::=
+                  │     │  │  │  └─ EXPR-L2
+                  │     │  │  │     ├─ EXPR-L2
+                  │     │  │  │     │  ├─ id::operations
+                  │     │  │  │     │  ├─ member-op::.
+                  │     │  │  │     │  └─ id::top
+                  │     │  │  │     └─ ARG-LIST
+                  │     │  │  │        ├─ parenthesis::(
+                  │     │  │  │        └─ parenthesis::)
+                  │     │  │  └─ semicolon::;
+                  │     │  └─ STATEMENTS
+                  │     │     ├─ EXPR-ST
+                  │     │     │  ├─ EXPR-L2
+                  │     │     │  │  ├─ EXPR-L2
+                  │     │     │  │  │  ├─ id::operations
+                  │     │     │  │  │  ├─ member-op::.
+                  │     │     │  │  │  └─ id::pop
+                  │     │     │  │  └─ ARG-LIST
+                  │     │     │  │     ├─ parenthesis::(
+                  │     │     │  │     └─ parenthesis::)
+                  │     │     │  └─ semicolon::;
+                  │     │     └─ STATEMENTS
+                  │     │        ├─ EXPR-ST
+                  │     │        │  ├─ EXPR-L16
+                  │     │        │  │  ├─ id::r_operand
+                  │     │        │  │  ├─ assignment-op::=
+                  │     │        │  │  └─ EXPR-L2
+                  │     │        │  │     ├─ EXPR-L2
+                  │     │        │  │     │  ├─ id::operands
+                  │     │        │  │     │  ├─ member-op::.
+                  │     │        │  │     │  └─ id::top
+                  │     │        │  │     └─ ARG-LIST
+                  │     │        │  │        ├─ parenthesis::(
+                  │     │        │  │        └─ parenthesis::)
+                  │     │        │  └─ semicolon::;
+                  │     │        └─ STATEMENTS
+                  │     │           ├─ EXPR-ST
+                  │     │           │  ├─ EXPR-L2
+                  │     │           │  │  ├─ EXPR-L2
+                  │     │           │  │  │  ├─ id::operands
+                  │     │           │  │  │  ├─ member-op::.
+                  │     │           │  │  │  └─ id::pop
+                  │     │           │  │  └─ ARG-LIST
+                  │     │           │  │     ├─ parenthesis::(
+                  │     │           │  │     └─ parenthesis::)
+                  │     │           │  └─ semicolon::;
+                  │     │           └─ STATEMENTS
+                  │     │              ├─ EXPR-ST
+                  │     │              │  ├─ EXPR-L16
+                  │     │              │  │  ├─ id::l_operand
+                  │     │              │  │  ├─ assignment-op::=
+                  │     │              │  │  └─ EXPR-L2
+                  │     │              │  │     ├─ EXPR-L2
+                  │     │              │  │     │  ├─ id::operands
+                  │     │              │  │     │  ├─ member-op::.
+                  │     │              │  │     │  └─ id::top
+                  │     │              │  │     └─ ARG-LIST
+                  │     │              │  │        ├─ parenthesis::(
+                  │     │              │  │        └─ parenthesis::)
+                  │     │              │  └─ semicolon::;
+                  │     │              └─ STATEMENTS
+                  │     │                 ├─ EXPR-ST
+                  │     │                 │  ├─ EXPR-L2
+                  │     │                 │  │  ├─ EXPR-L2
+                  │     │                 │  │  │  ├─ id::operands
+                  │     │                 │  │  │  ├─ member-op::.
+                  │     │                 │  │  │  └─ id::pop
+                  │     │                 │  │  └─ ARG-LIST
+                  │     │                 │  │     ├─ parenthesis::(
+                  │     │                 │  │     └─ parenthesis::)
+                  │     │                 │  └─ semicolon::;
+                  │     │                 └─ STATEMENTS
+                  │     │                    ├─ SEL-ST
+                  │     │                    │  ├─ switch::switch
+                  │     │                    │  ├─ parenthesis::(
+                  │     │                    │  ├─ id::operation
+                  │     │                    │  ├─ parenthesis::)
+                  │     │                    │  └─ CMPD-ST
+                  │     │                    │     ├─ brace::{
+                  │     │                    │     ├─ STATEMENTS
+                  │     │                    │     │  ├─ LABEL-ST
+                  │     │                    │     │  │  ├─ case::case
+                  │     │                    │     │  │  ├─ char-lit::'+'
+                  │     │                    │     │  │  └─ colon:::
+                  │     │                    │     │  └─ STATEMENTS
+                  │     │                    │     │     ├─ EXPR-ST
+                  │     │                    │     │     │  ├─ EXPR-L16
+                  │     │                    │     │     │  │  ├─ id::result
+                  │     │                    │     │     │  │  ├─ assignment-op::=
+                  │     │                    │     │     │  │  └─ EXPR-L6
+                  │     │                    │     │     │  │     ├─ id::l_operand
+                  │     │                    │     │     │  │     ├─ arithmetic-op::+
+                  │     │                    │     │     │  │     └─ id::r_operand
+                  │     │                    │     │     │  └─ semicolon::;
+                  │     │                    │     │     └─ STATEMENTS
+                  │     │                    │     │        ├─ JMP-ST
+                  │     │                    │     │        │  ├─ break::break
+                  │     │                    │     │        │  └─ semicolon::;
+                  │     │                    │     │        └─ STATEMENTS
+                  │     │                    │     │           ├─ LABEL-ST
+                  │     │                    │     │           │  ├─ case::case
+                  │     │                    │     │           │  ├─ char-lit::'-'
+                  │     │                    │     │           │  └─ colon:::
+                  │     │                    │     │           └─ STATEMENTS
+                  │     │                    │     │              ├─ EXPR-ST
+                  │     │                    │     │              │  ├─ EXPR-L16
+                  │     │                    │     │              │  │  ├─ id::result
+                  │     │                    │     │              │  │  ├─ assignment-op::=
+                  │     │                    │     │              │  │  └─ EXPR-L6
+                  │     │                    │     │              │  │     ├─ id::l_operand
+                  │     │                    │     │              │  │     ├─ arithmetic-op::-
+                  │     │                    │     │              │  │     └─ id::r_operand
+                  │     │                    │     │              │  └─ semicolon::;
+                  │     │                    │     │              └─ STATEMENTS
+                  │     │                    │     │                 ├─ JMP-ST
+                  │     │                    │     │                 │  ├─ break::break
+                  │     │                    │     │                 │  └─ semicolon::;
+                  │     │                    │     │                 └─ STATEMENTS
+                  │     │                    │     │                    ├─ LABEL-ST
+                  │     │                    │     │                    │  ├─ case::case
+                  │     │                    │     │                    │  ├─ char-lit::'*'
+                  │     │                    │     │                    │  └─ colon:::
+                  │     │                    │     │                    └─ STATEMENTS
+                  │     │                    │     │                       ├─ EXPR-ST
+                  │     │                    │     │                       │  ├─ EXPR-L16
+                  │     │                    │     │                       │  │  ├─ id::result
+                  │     │                    │     │                       │  │  ├─ assignment-op::=
+                  │     │                    │     │                       │  │  └─ EXPR-L5
+                  │     │                    │     │                       │  │     ├─ id::l_operand
+                  │     │                    │     │                       │  │     ├─ arithmetic-op::*
+                  │     │                    │     │                       │  │     └─ id::r_operand
+                  │     │                    │     │                       │  └─ semicolon::;
+                  │     │                    │     │                       └─ STATEMENTS
+                  │     │                    │     │                          ├─ JMP-ST
+                  │     │                    │     │                          │  ├─ break::break
+                  │     │                    │     │                          │  └─ semicolon::;
+                  │     │                    │     │                          └─ STATEMENTS
+                  │     │                    │     │                             ├─ LABEL-ST
+                  │     │                    │     │                             │  ├─ case::case
+                  │     │                    │     │                             │  ├─ char-lit::'/'
+                  │     │                    │     │                             │  └─ colon:::
+                  │     │                    │     │                             └─ STATEMENTS
+                  │     │                    │     │                                ├─ EXPR-ST
+                  │     │                    │     │                                │  ├─ EXPR-L16
+                  │     │                    │     │                                │  │  ├─ id::result
+                  │     │                    │     │                                │  │  ├─ assignment-op::=
+                  │     │                    │     │                                │  │  └─ EXPR-L5
+                  │     │                    │     │                                │  │     ├─ id::l_operand
+                  │     │                    │     │                                │  │     ├─ arithmetic-op::/
+                  │     │                    │     │                                │  │     └─ id::r_operand
+                  │     │                    │     │                                │  └─ semicolon::;
+                  │     │                    │     │                                └─ JMP-ST
+                  │     │                    │     │                                   ├─ break::break
+                  │     │                    │     │                                   └─ semicolon::;
+                  │     │                    │     └─ brace::}
+                  │     │                    └─ STATEMENTS
+                  │     │                       ├─ EXPR-ST
+                  │     │                       │  ├─ EXPR-L2
+                  │     │                       │  │  ├─ EXPR-L2
+                  │     │                       │  │  │  ├─ id::operands
+                  │     │                       │  │  │  ├─ member-op::.
+                  │     │                       │  │  │  └─ id::push
+                  │     │                       │  │  └─ ARG-LIST
+                  │     │                       │  │     ├─ parenthesis::(
+                  │     │                       │  │     ├─ id::result
+                  │     │                       │  │     └─ parenthesis::)
+                  │     │                       │  └─ semicolon::;
+                  │     │                       └─ JMP-ST
+                  │     │                          ├─ return::return
+                  │     │                          └─ semicolon::;
+                  │     └─ brace::}
+                  └─ FUNC-ST
+                     ├─ int::int
+                     ├─ id::main
+                     ├─ PARAM-LIST
+                     │  ├─ parenthesis::(
+                     │  └─ parenthesis::)
+                     └─ CMPD-ST
+                        ├─ brace::{
+                        ├─ STATEMENTS
+                        │  ├─ DECL-ST
+                        │  │  ├─ DECL
+                        │  │  │  ├─ char::char
+                        │  │  │  └─ ID-DECL
+                        │  │  │     ├─ id::expression
+                        │  │  │     ├─ bracket::[
+                        │  │  │     ├─ int-lit::100
+                        │  │  │     └─ bracket::]
+                        │  │  └─ semicolon::;
+                        │  └─ STATEMENTS
+                        │     ├─ EXPR-ST
+                        │     │  ├─ EXPR-L7
+                        │     │  │  ├─ id::cout
+                        │     │  │  ├─ bit-op::<<
+                        │     │  │  └─ str-lit::"Enter the expression: "
+                        │     │  └─ semicolon::;
+                        │     └─ STATEMENTS
+                        │        ├─ EXPR-ST
+                        │        │  ├─ EXPR-L7
+                        │        │  │  ├─ id::cin
+                        │        │  │  ├─ bit-op::>>
+                        │        │  │  └─ id::expression
+                        │        │  └─ semicolon::;
+                        │        └─ STATEMENTS
+                        │           ├─ DECL-ST
+                        │           │  ├─ DECL
+                        │           │  │  ├─ int::int
+                        │           │  │  └─ ID-DECL
+                        │           │  │     ├─ id::i
+                        │           │  │     ├─ assignment-op::=
+                        │           │  │     └─ int-lit::0
+                        │           │  └─ semicolon::;
+                        │           └─ STATEMENTS
+                        │              ├─ ITER-ST
+                        │              │  ├─ while::while
+                        │              │  ├─ parenthesis::(
+                        │              │  ├─ EXPR-L10
+                        │              │  │  ├─ EXPR-L2
+                        │              │  │  │  ├─ id::expression
+                        │              │  │  │  ├─ bracket::[
+                        │              │  │  │  ├─ id::i
+                        │              │  │  │  └─ bracket::]
+                        │              │  │  ├─ relational-op::!=
+                        │              │  │  └─ char-lit::'\0'
+                        │              │  ├─ parenthesis::)
+                        │              │  └─ CMPD-ST
+                        │              │     ├─ brace::{
+                        │              │     ├─ STATEMENTS
+                        │              │     │  ├─ SEL-ST
+                        │              │     │  │  ├─ switch::switch
+                        │              │     │  │  ├─ parenthesis::(
+                        │              │     │  │  ├─ EXPR-L2
+                        │              │     │  │  │  ├─ id::expression
+                        │              │     │  │  │  ├─ bracket::[
+                        │              │     │  │  │  ├─ id::i
+                        │              │     │  │  │  └─ bracket::]
+                        │              │     │  │  ├─ parenthesis::)
+                        │              │     │  │  └─ CMPD-ST
+                        │              │     │  │     ├─ brace::{
+                        │              │     │  │     ├─ STATEMENTS
+                        │              │     │  │     │  ├─ LABEL-ST
+                        │              │     │  │     │  │  ├─ case::case
+                        │              │     │  │     │  │  ├─ char-lit::'('
+                        │              │     │  │     │  │  └─ colon:::
+                        │              │     │  │     │  └─ STATEMENTS
+                        │              │     │  │     │     ├─ EXPR-ST
+                        │              │     │  │     │     │  ├─ EXPR-L2
+                        │              │     │  │     │     │  │  ├─ EXPR-L2
+                        │              │     │  │     │     │  │  │  ├─ id::operations
+                        │              │     │  │     │     │  │  │  ├─ member-op::.
+                        │              │     │  │     │     │  │  │  └─ id::push
+                        │              │     │  │     │     │  │  └─ ARG-LIST
+                        │              │     │  │     │     │  │     ├─ parenthesis::(
+                        │              │     │  │     │     │  │     ├─ EXPR-L2
+                        │              │     │  │     │     │  │     │  ├─ id::expression
+                        │              │     │  │     │     │  │     │  ├─ bracket::[
+                        │              │     │  │     │     │  │     │  ├─ id::i
+                        │              │     │  │     │     │  │     │  └─ bracket::]
+                        │              │     │  │     │     │  │     └─ parenthesis::)
+                        │              │     │  │     │     │  └─ semicolon::;
+                        │              │     │  │     │     └─ STATEMENTS
+                        │              │     │  │     │        ├─ JMP-ST
+                        │              │     │  │     │        │  ├─ break::break
+                        │              │     │  │     │        │  └─ semicolon::;
+                        │              │     │  │     │        └─ STATEMENTS
+                        │              │     │  │     │           ├─ LABEL-ST
+                        │              │     │  │     │           │  ├─ case::case
+                        │              │     │  │     │           │  ├─ char-lit::')'
+                        │              │     │  │     │           │  └─ colon:::
+                        │              │     │  │     │           └─ STATEMENTS
+                        │              │     │  │     │              ├─ ITER-ST
+                        │              │     │  │     │              │  ├─ while::while
+                        │              │     │  │     │              │  ├─ parenthesis::(
+                        │              │     │  │     │              │  ├─ EXPR-L14
+                        │              │     │  │     │              │  │  ├─ EXPR-L3
+                        │              │     │  │     │              │  │  │  ├─ logical-op::!
+                        │              │     │  │     │              │  │  │  └─ EXPR-L2
+                        │              │     │  │     │              │  │  │     ├─ EXPR-L2
+                        │              │     │  │     │              │  │  │     │  ├─ id::operations
+                        │              │     │  │     │              │  │  │     │  ├─ member-op::.
+                        │              │     │  │     │              │  │  │     │  └─ id::empty
+                        │              │     │  │     │              │  │  │     └─ ARG-LIST
+                        │              │     │  │     │              │  │  │        ├─ parenthesis::(
+                        │              │     │  │     │              │  │  │        └─ parenthesis::)
+                        │              │     │  │     │              │  │  ├─ logical-op::&&
+                        │              │     │  │     │              │  │  └─ EXPR-L10
+                        │              │     │  │     │              │  │     ├─ EXPR-L2
+                        │              │     │  │     │              │  │     │  ├─ EXPR-L2
+                        │              │     │  │     │              │  │     │  │  ├─ id::operations
+                        │              │     │  │     │              │  │     │  │  ├─ member-op::.
+                        │              │     │  │     │              │  │     │  │  └─ id::top
+                        │              │     │  │     │              │  │     │  └─ ARG-LIST
+                        │              │     │  │     │              │  │     │     ├─ parenthesis::(
+                        │              │     │  │     │              │  │     │     └─ parenthesis::)
+                        │              │     │  │     │              │  │     ├─ relational-op::!=
+                        │              │     │  │     │              │  │     └─ char-lit::'('
+                        │              │     │  │     │              │  ├─ parenthesis::)
+                        │              │     │  │     │              │  └─ CMPD-ST
+                        │              │     │  │     │              │     ├─ brace::{
+                        │              │     │  │     │              │     ├─ EXPR-ST
+                        │              │     │  │     │              │     │  ├─ EXPR-L2
+                        │              │     │  │     │              │     │  │  ├─ id::cal
+                        │              │     │  │     │              │     │  │  └─ ARG-LIST
+                        │              │     │  │     │              │     │  │     ├─ parenthesis::(
+                        │              │     │  │     │              │     │  │     └─ parenthesis::)
+                        │              │     │  │     │              │     │  └─ semicolon::;
+                        │              │     │  │     │              │     └─ brace::}
+                        │              │     │  │     │              └─ STATEMENTS
+                        │              │     │  │     │                 ├─ EXPR-ST
+                        │              │     │  │     │                 │  ├─ EXPR-L2
+                        │              │     │  │     │                 │  │  ├─ EXPR-L2
+                        │              │     │  │     │                 │  │  │  ├─ id::operations
+                        │              │     │  │     │                 │  │  │  ├─ member-op::.
+                        │              │     │  │     │                 │  │  │  └─ id::pop
+                        │              │     │  │     │                 │  │  └─ ARG-LIST
+                        │              │     │  │     │                 │  │     ├─ parenthesis::(
+                        │              │     │  │     │                 │  │     └─ parenthesis::)
+                        │              │     │  │     │                 │  └─ semicolon::;
+                        │              │     │  │     │                 └─ STATEMENTS
+                        │              │     │  │     │                    ├─ JMP-ST
+                        │              │     │  │     │                    │  ├─ break::break
+                        │              │     │  │     │                    │  └─ semicolon::;
+                        │              │     │  │     │                    └─ STATEMENTS
+                        │              │     │  │     │                       ├─ LABEL-ST
+                        │              │     │  │     │                       │  ├─ case::case
+                        │              │     │  │     │                       │  ├─ char-lit::'+'
+                        │              │     │  │     │                       │  └─ colon:::
+                        │              │     │  │     │                       └─ STATEMENTS
+                        │              │     │  │     │                          ├─ LABEL-ST
+                        │              │     │  │     │                          │  ├─ case::case
+                        │              │     │  │     │                          │  ├─ char-lit::'-'
+                        │              │     │  │     │                          │  └─ colon:::
+                        │              │     │  │     │                          └─ STATEMENTS
+                        │              │     │  │     │                             ├─ ITER-ST
+                        │              │     │  │     │                             │  ├─ while::while
+                        │              │     │  │     │                             │  ├─ parenthesis::(
+                        │              │     │  │     │                             │  ├─ EXPR-L14
+                        │              │     │  │     │                             │  │  ├─ EXPR-L3
+                        │              │     │  │     │                             │  │  │  ├─ logical-op::!
+                        │              │     │  │     │                             │  │  │  └─ EXPR-L2
+                        │              │     │  │     │                             │  │  │     ├─ EXPR-L2
+                        │              │     │  │     │                             │  │  │     │  ├─ id::operations
+                        │              │     │  │     │                             │  │  │     │  ├─ member-op::.
+                        │              │     │  │     │                             │  │  │     │  └─ id::empty
+                        │              │     │  │     │                             │  │  │     └─ ARG-LIST
+                        │              │     │  │     │                             │  │  │        ├─ parenthesis::(
+                        │              │     │  │     │                             │  │  │        └─ parenthesis::)
+                        │              │     │  │     │                             │  │  ├─ logical-op::&&
+                        │              │     │  │     │                             │  │  └─ OPERAND
+                        │              │     │  │     │                             │  │     ├─ parenthesis::(
+                        │              │     │  │     │                             │  │     ├─ EXPR-L15
+                        │              │     │  │     │                             │  │     │  ├─ EXPR-L10
+                        │              │     │  │     │                             │  │     │  │  ├─ EXPR-L2
+                        │              │     │  │     │                             │  │     │  │  │  ├─ EXPR-L2
+                        │              │     │  │     │                             │  │     │  │  │  │  ├─ id::operations
+                        │              │     │  │     │                             │  │     │  │  │  │  ├─ member-op::.
+                        │              │     │  │     │                             │  │     │  │  │  │  └─ id::top
+                        │              │     │  │     │                             │  │     │  │  │  └─ ARG-LIST
+                        │              │     │  │     │                             │  │     │  │  │     ├─ parenthesis::(
+                        │              │     │  │     │                             │  │     │  │  │     └─ parenthesis::)
+                        │              │     │  │     │                             │  │     │  │  ├─ relational-op::==
+                        │              │     │  │     │                             │  │     │  │  └─ char-lit::'*'
+                        │              │     │  │     │                             │  │     │  ├─ logical-op::||
+                        │              │     │  │     │                             │  │     │  └─ EXPR-L10
+                        │              │     │  │     │                             │  │     │     ├─ EXPR-L2
+                        │              │     │  │     │                             │  │     │     │  ├─ EXPR-L2
+                        │              │     │  │     │                             │  │     │     │  │  ├─ id::operations
+                        │              │     │  │     │                             │  │     │     │  │  ├─ member-op::.
+                        │              │     │  │     │                             │  │     │     │  │  └─ id::top
+                        │              │     │  │     │                             │  │     │     │  └─ ARG-LIST
+                        │              │     │  │     │                             │  │     │     │     ├─ parenthesis::(
+                        │              │     │  │     │                             │  │     │     │     └─ parenthesis::)
+                        │              │     │  │     │                             │  │     │     ├─ relational-op::==
+                        │              │     │  │     │                             │  │     │     └─ char-lit::'/'
+                        │              │     │  │     │                             │  │     └─ parenthesis::)
+                        │              │     │  │     │                             │  ├─ parenthesis::)
+                        │              │     │  │     │                             │  └─ CMPD-ST
+                        │              │     │  │     │                             │     ├─ brace::{
+                        │              │     │  │     │                             │     ├─ EXPR-ST
+                        │              │     │  │     │                             │     │  ├─ EXPR-L2
+                        │              │     │  │     │                             │     │  │  ├─ id::cal
+                        │              │     │  │     │                             │     │  │  └─ ARG-LIST
+                        │              │     │  │     │                             │     │  │     ├─ parenthesis::(
+                        │              │     │  │     │                             │     │  │     └─ parenthesis::)
+                        │              │     │  │     │                             │     │  └─ semicolon::;
+                        │              │     │  │     │                             │     └─ brace::}
+                        │              │     │  │     │                             └─ STATEMENTS
+                        │              │     │  │     │                                ├─ EXPR-ST
+                        │              │     │  │     │                                │  ├─ EXPR-L2
+                        │              │     │  │     │                                │  │  ├─ EXPR-L2
+                        │              │     │  │     │                                │  │  │  ├─ id::operations
+                        │              │     │  │     │                                │  │  │  ├─ member-op::.
+                        │              │     │  │     │                                │  │  │  └─ id::push
+                        │              │     │  │     │                                │  │  └─ ARG-LIST
+                        │              │     │  │     │                                │  │     ├─ parenthesis::(
+                        │              │     │  │     │                                │  │     ├─ EXPR-L2
+                        │              │     │  │     │                                │  │     │  ├─ id::expression
+                        │              │     │  │     │                                │  │     │  ├─ bracket::[
+                        │              │     │  │     │                                │  │     │  ├─ id::i
+                        │              │     │  │     │                                │  │     │  └─ bracket::]
+                        │              │     │  │     │                                │  │     └─ parenthesis::)
+                        │              │     │  │     │                                │  └─ semicolon::;
+                        │              │     │  │     │                                └─ STATEMENTS
+                        │              │     │  │     │                                   ├─ JMP-ST
+                        │              │     │  │     │                                   │  ├─ break::break
+                        │              │     │  │     │                                   │  └─ semicolon::;
+                        │              │     │  │     │                                   └─ STATEMENTS
+                        │              │     │  │     │                                      ├─ LABEL-ST
+                        │              │     │  │     │                                      │  ├─ case::case
+                        │              │     │  │     │                                      │  ├─ char-lit::'*'
+                        │              │     │  │     │                                      │  └─ colon:::
+                        │              │     │  │     │                                      └─ STATEMENTS
+                        │              │     │  │     │                                         ├─ LABEL-ST
+                        │              │     │  │     │                                         │  ├─ case::case
+                        │              │     │  │     │                                         │  ├─ char-lit::'/'
+                        │              │     │  │     │                                         │  └─ colon:::
+                        │              │     │  │     │                                         └─ STATEMENTS
+                        │              │     │  │     │                                            ├─ EXPR-ST
+                        │              │     │  │     │                                            │  ├─ EXPR-L2
+                        │              │     │  │     │                                            │  │  ├─ EXPR-L2
+                        │              │     │  │     │                                            │  │  │  ├─ id::operations
+                        │              │     │  │     │                                            │  │  │  ├─ member-op::.
+                        │              │     │  │     │                                            │  │  │  └─ id::push
+                        │              │     │  │     │                                            │  │  └─ ARG-LIST
+                        │              │     │  │     │                                            │  │     ├─ parenthesis::(
+                        │              │     │  │     │                                            │  │     ├─ EXPR-L2
+                        │              │     │  │     │                                            │  │     │  ├─ id::expression
+                        │              │     │  │     │                                            │  │     │  ├─ bracket::[
+                        │              │     │  │     │                                            │  │     │  ├─ id::i
+                        │              │     │  │     │                                            │  │     │  └─ bracket::]
+                        │              │     │  │     │                                            │  │     └─ parenthesis::)
+                        │              │     │  │     │                                            │  └─ semicolon::;
+                        │              │     │  │     │                                            └─ STATEMENTS
+                        │              │     │  │     │                                               ├─ JMP-ST
+                        │              │     │  │     │                                               │  ├─ break::break
+                        │              │     │  │     │                                               │  └─ semicolon::;
+                        │              │     │  │     │                                               └─ STATEMENTS
+                        │              │     │  │     │                                                  ├─ LABEL-ST
+                        │              │     │  │     │                                                  │  ├─ default::default
+                        │              │     │  │     │                                                  │  └─ colon:::
+                        │              │     │  │     │                                                  └─ STATEMENTS
+                        │              │     │  │     │                                                     ├─ EXPR-ST
+                        │              │     │  │     │                                                     │  ├─ EXPR-L2
+                        │              │     │  │     │                                                     │  │  ├─ EXPR-L2
+                        │              │     │  │     │                                                     │  │  │  ├─ id::operands
+                        │              │     │  │     │                                                     │  │  │  ├─ member-op::.
+                        │              │     │  │     │                                                     │  │  │  └─ id::push
+                        │              │     │  │     │                                                     │  │  └─ ARG-LIST
+                        │              │     │  │     │                                                     │  │     ├─ parenthesis::(
+                        │              │     │  │     │                                                     │  │     ├─ EXPR-L6
+                        │              │     │  │     │                                                     │  │     │  ├─ EXPR-L2
+                        │              │     │  │     │                                                     │  │     │  │  ├─ id::expression
+                        │              │     │  │     │                                                     │  │     │  │  ├─ bracket::[
+                        │              │     │  │     │                                                     │  │     │  │  ├─ id::i
+                        │              │     │  │     │                                                     │  │     │  │  └─ bracket::]
+                        │              │     │  │     │                                                     │  │     │  ├─ arithmetic-op::-
+                        │              │     │  │     │                                                     │  │     │  └─ char-lit::'0'
+                        │              │     │  │     │                                                     │  │     └─ parenthesis::)
+                        │              │     │  │     │                                                     │  └─ semicolon::;
+                        │              │     │  │     │                                                     └─ JMP-ST
+                        │              │     │  │     │                                                        ├─ break::break
+                        │              │     │  │     │                                                        └─ semicolon::;
+                        │              │     │  │     └─ brace::}
+                        │              │     │  └─ EXPR-ST
+                        │              │     │     ├─ EXPR-L2
+                        │              │     │     │  ├─ id::i
+                        │              │     │     │  └─ increment-op::++
+                        │              │     │     └─ semicolon::;
+                        │              │     └─ brace::}
+                        │              └─ STATEMENTS
+                        │                 ├─ ITER-ST
+                        │                 │  ├─ while::while
+                        │                 │  ├─ parenthesis::(
+                        │                 │  ├─ EXPR-L3
+                        │                 │  │  ├─ logical-op::!
+                        │                 │  │  └─ EXPR-L2
+                        │                 │  │     ├─ EXPR-L2
+                        │                 │  │     │  ├─ id::operations
+                        │                 │  │     │  ├─ member-op::.
+                        │                 │  │     │  └─ id::empty
+                        │                 │  │     └─ ARG-LIST
+                        │                 │  │        ├─ parenthesis::(
+                        │                 │  │        └─ parenthesis::)
+                        │                 │  ├─ parenthesis::)
+                        │                 │  └─ EXPR-ST
+                        │                 │     ├─ EXPR-L2
+                        │                 │     │  ├─ id::cal
+                        │                 │     │  └─ ARG-LIST
+                        │                 │     │     ├─ parenthesis::(
+                        │                 │     │     └─ parenthesis::)
+                        │                 │     └─ semicolon::;
+                        │                 └─ STATEMENTS
+                        │                    ├─ EXPR-ST
+                        │                    │  ├─ EXPR-L7
+                        │                    │  │  ├─ EXPR-L7
+                        │                    │  │  │  ├─ EXPR-L7
+                        │                    │  │  │  │  ├─ id::cout
+                        │                    │  │  │  │  ├─ bit-op::<<
+                        │                    │  │  │  │  └─ str-lit::"Result: "
+                        │                    │  │  │  ├─ bit-op::<<
+                        │                    │  │  │  └─ id::result
+                        │                    │  │  ├─ bit-op::<<
+                        │                    │  │  └─ id::endl
+                        │                    │  └─ semicolon::;
+                        │                    └─ JMP-ST
+                        │                       ├─ return::return
+                        │                       ├─ int-lit::0
+                        │                       └─ semicolon::;
+                        └─ brace::}

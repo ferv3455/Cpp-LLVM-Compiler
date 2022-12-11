@@ -33,6 +33,7 @@ GRAMMAR = {
         'DECL-SPEC',
         'TYPE-SPECS',
         'TYPE-SPEC',
+        'TYPES',
         'DECLARATORS',
         'ID-DECL',
 
@@ -139,6 +140,9 @@ GRAMMAR = {
         'brace::{',
         'brace::}',
         'semicolon',
+
+        'relational-op::<',
+        'relational-op::>',
 
         'arithmetic-op::+',
         'arithmetic-op::-',
@@ -261,9 +265,13 @@ GRAMMAR = {
         ('TYPE-SPEC', 'wchar_t'),
         ('TYPE-SPEC', 'char16_t'),
         ('TYPE-SPEC', 'char32_t'),
+        ('TYPE-SPEC', 'relational-op::< relational-op::>'),
+        ('TYPE-SPEC', 'relational-op::< TYPES relational-op::>'),
+        ('TYPES', 'TYPES comma TYPE-SPEC'),
+        ('TYPES', 'TYPE-SPEC'),
 
         #   Declarators
-        ('DECLARATORS', 'ID-DECL DECLARATORS'),
+        ('DECLARATORS', 'ID-DECL comma DECLARATORS'),
         ('DECLARATORS', 'ID-DECL'),
         ('ID-DECL', 'id'),
         ('ID-DECL', 'id PARAM-LIST'),
