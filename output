@@ -1,59 +1,115 @@
-SENT-E
-├─ int::int
-├─ id::main
-├─ parenthesis::(
-├─ parenthesis::)
-└─ SENT-T
-   ├─ brace::{
-   ├─ SENT-P
-   │  ├─ SENT-P
-   │  │  ├─ SENT-P
-   │  │  │  └─ SENT-Q
-   │  │  │     └─ SENT-I
-   │  │  │        ├─ int::int
-   │  │  │        ├─ id::test1
-   │  │  │        ├─ assignment-op::=
-   │  │  │        ├─ EXPR-E
-   │  │  │        │  └─ EXPR-T
-   │  │  │        │     └─ EXPR-F
-   │  │  │        │        └─ int-lit::23
-   │  │  │        └─ semicolon::;
-   │  │  └─ SENT-Q
-   │  │     └─ SENT-I
-   │  │        ├─ int::int
-   │  │        ├─ id::test2
-   │  │        ├─ assignment-op::=
-   │  │        ├─ EXPR-E
-   │  │        │  ├─ EXPR-E
-   │  │        │  │  └─ EXPR-T
-   │  │        │  │     ├─ EXPR-T
-   │  │        │  │     │  └─ EXPR-F
-   │  │        │  │     │     └─ id::test1
-   │  │        │  │     ├─ arithmetic-op::*
-   │  │        │  │     └─ EXPR-F
-   │  │        │  │        ├─ parenthesis::(
-   │  │        │  │        ├─ EXPR-E
-   │  │        │  │        │  ├─ EXPR-E
-   │  │        │  │        │  │  └─ EXPR-T
-   │  │        │  │        │  │     └─ EXPR-F
-   │  │        │  │        │  │        └─ int-lit::67
-   │  │        │  │        │  ├─ arithmetic-op::+
-   │  │        │  │        │  └─ EXPR-T
-   │  │        │  │        │     └─ EXPR-F
-   │  │        │  │        │        └─ id::test1
-   │  │        │  │        └─ parenthesis::)
-   │  │        │  ├─ arithmetic-op::+
-   │  │        │  └─ EXPR-T
-   │  │        │     └─ EXPR-F
-   │  │        │        └─ int-lit::92
-   │  │        └─ semicolon::;
-   │  └─ SENT-Q
-   │     └─ SENT-A
-   │        ├─ id::test1
-   │        ├─ assignment-op::=
-   │        ├─ EXPR-E
-   │        │  └─ EXPR-T
-   │        │     └─ EXPR-F
-   │        │        └─ id::test2
-   │        └─ semicolon::;
-   └─ brace::}
+PROGRAM
+├─ MACROS
+│  ├─ macro::#include <cstdio>
+
+│  └─ MACROS
+│     ├─ macro::#include <iostream>
+
+│     └─ MACROS
+│        ├─ macro::#include <stdlib.h>
+
+│        └─ macro::#define dfsd 5 + 6
+
+└─ STATEMENTS
+   ├─ DECL-ST
+   │  ├─ DECL
+   │  │  ├─ using::using
+   │  │  ├─ namespace::namespace
+   │  │  └─ id::std
+   │  └─ semicolon::;
+   └─ FUNC-ST
+      ├─ int::int
+      ├─ id::main
+      ├─ PARAM-LIST
+      │  ├─ parenthesis::(
+      │  └─ parenthesis::)
+      └─ CMPD-ST
+         ├─ brace::{
+         ├─ STATEMENTS
+         │  ├─ ITER-ST
+         │  │  ├─ for::for
+         │  │  ├─ parenthesis::(
+         │  │  ├─ FOR-COND
+         │  │  │  ├─ DECL
+         │  │  │  │  ├─ int::int
+         │  │  │  │  └─ ID-DECL
+         │  │  │  │     ├─ id::i
+         │  │  │  │     ├─ assignment-op::=
+         │  │  │  │     └─ hex-lit::0x1
+         │  │  │  ├─ semicolon::;
+         │  │  │  ├─ EXPR-L10
+         │  │  │  │  ├─ id::i
+         │  │  │  │  ├─ relational-op::<
+         │  │  │  │  └─ float-lit::-10.5F
+         │  │  │  ├─ semicolon::;
+         │  │  │  └─ EXPR-L16
+         │  │  │     ├─ id::i
+         │  │  │     ├─ arithm-assign-op::+=
+         │  │  │     └─ oct-lit::02
+         │  │  ├─ parenthesis::)
+         │  │  └─ CMPD-ST
+         │  │     ├─ brace::{
+         │  │     ├─ SEL-ST
+         │  │     │  ├─ if::if
+         │  │     │  ├─ parenthesis::(
+         │  │     │  ├─ EXPR-L14
+         │  │     │  │  ├─ id::i
+         │  │     │  │  ├─ logical-op::&&
+         │  │     │  │  └─ char-lit::'\0'
+         │  │     │  ├─ parenthesis::)
+         │  │     │  ├─ CMPD-ST
+         │  │     │  │  ├─ brace::{
+         │  │     │  │  ├─ STATEMENTS
+         │  │     │  │  │  ├─ DECL-ST
+         │  │     │  │  │  │  ├─ DECL
+         │  │     │  │  │  │  │  ├─ float::float
+         │  │     │  │  │  │  │  └─ ID-DECL
+         │  │     │  │  │  │  │     ├─ id::a
+         │  │     │  │  │  │  │     ├─ assignment-op::=
+         │  │     │  │  │  │  │     └─ float-lit::-.4e010L
+         │  │     │  │  │  │  └─ semicolon::;
+         │  │     │  │  │  └─ EXPR-ST
+         │  │     │  │  │     ├─ EXPR-L2
+         │  │     │  │  │     │  ├─ id::printf
+         │  │     │  │  │     │  └─ ARG-LIST
+         │  │     │  │  │     │     ├─ parenthesis::(
+         │  │     │  │  │     │     ├─ str-lit::u8"Hello 'world'!\n"
+         │  │     │  │  │     │     └─ parenthesis::)
+         │  │     │  │  │     └─ semicolon::;
+         │  │     │  │  └─ brace::}
+         │  │     │  ├─ else::else
+         │  │     │  └─ SEL-ST
+         │  │     │     ├─ if::if
+         │  │     │     ├─ parenthesis::(
+         │  │     │     ├─ EXPR-L10
+         │  │     │     │  ├─ EXPR-L5
+         │  │     │     │  │  ├─ id::i
+         │  │     │     │  │  ├─ arithmetic-op::%
+         │  │     │     │  │  └─ int-lit::5
+         │  │     │     │  ├─ relational-op::==
+         │  │     │     │  └─ int-lit::0
+         │  │     │     ├─ parenthesis::)
+         │  │     │     └─ CMPD-ST
+         │  │     │        ├─ brace::{
+         │  │     │        ├─ EXPR-ST
+         │  │     │        │  ├─ EXPR-L7
+         │  │     │        │  │  ├─ EXPR-L7
+         │  │     │        │  │  │  ├─ ID
+         │  │     │        │  │  │  │  ├─ id::std
+         │  │     │        │  │  │  │  ├─ double-colon::::
+         │  │     │        │  │  │  │  └─ id::cout
+         │  │     │        │  │  │  ├─ bit-op::<<
+         │  │     │        │  │  │  └─ char-lit::U'?'
+         │  │     │        │  │  ├─ bit-op::<<
+         │  │     │        │  │  └─ ID
+         │  │     │        │  │     ├─ id::std
+         │  │     │        │  │     ├─ double-colon::::
+         │  │     │        │  │     └─ id::endl
+         │  │     │        │  └─ semicolon::;
+         │  │     │        └─ brace::}
+         │  │     └─ brace::}
+         │  └─ JMP-ST
+         │     ├─ return::return
+         │     ├─ int-lit::0
+         │     └─ semicolon::;
+         └─ brace::}

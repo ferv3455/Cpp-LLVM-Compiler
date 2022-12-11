@@ -27,18 +27,6 @@ class Item:
             self.derivation.id, self.derivation.lhs, rhs_str)
 
 
-class LR1Item:
-    def __init__(self, item: Item, lookahead: Set[Symbol]) -> None:
-        self.item = item
-        self.lookahead = lookahead.copy()
-
-    def nextSymbol(self) -> Symbol:
-        return self.item.nextSymbol()
-
-    def __repr__(self) -> str:
-        return '{}, {}'.format(self.item, self.lookahead)
-
-
 class Action:
     def __init__(self, actionType: int, value: Any) -> None:
         self.type = actionType

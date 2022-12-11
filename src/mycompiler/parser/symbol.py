@@ -40,6 +40,12 @@ class Symbol:
 
         prefix_list = [('   ' if b else '│  ') for b in end[:-1]] + \
             ['└─ ' if end[-1] else '├─ ']
+
+        # Skip nodes with only one child
+        if not self.terminal and len(self.symbols) == 1:
+            self.symbols[0].printAST(end, **kwargs)
+            return
+
         print('{}{}'.format(''.join(prefix_list), self), **kwargs)
         if not self.terminal:
             for symbol in self.symbols[:-1]:
