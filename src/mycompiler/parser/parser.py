@@ -4,6 +4,7 @@ from typing import Dict, Generator
 from collections import deque
 
 from .dfa import ViablePrefixDFA
+# from .slrdfa import ViablePrefixDFA
 from .symbol import Symbol
 from .grammar import Grammar
 from ..utils import IteratorWrapper

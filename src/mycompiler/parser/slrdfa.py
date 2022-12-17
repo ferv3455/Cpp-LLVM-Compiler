@@ -1,6 +1,5 @@
 from collections import deque
-from pprint import pprint
-from typing import Any, Dict, List, Set
+from typing import Any, List
 
 from .grammar import Grammar, Derivation
 from .symbol import Symbol
@@ -37,63 +36,36 @@ class Action:
 
 
 class DFAState:
-    def __init__(self, items: List[tuple] = None) -> None:
+    def __init__(self, items: List[Item] = None) -> None:
         if items is not None:
-            self.items = dict(items)
+            self.items = set(items)
         else:
-            self.items = dict()
+            self.items = set()
 
-    def updateClosure(self, itemMapping: Dict[Symbol, List[List[Item]]], grammar: Grammar) -> None:
+    def updateClosure(self, allItems: List[List[Item]]) -> None:
         if not self.items:
             raise SyntaxError('Calculating closure of an empty set')
 
         while True:
-            new_items = dict()
-            # for each [A -> a.Bb, a]
-            for item, lookahead in self.items.items():
+            new_items = set()
+            for item in self.items:
                 next_symbol = item.nextSymbol()
                 if next_symbol and not next_symbol.terminal:
-                    # Calculate first(ba)
-                    index = item.index
-                    if index == len(item.derivation.rhs) - 1:
-                        # check first(a)
-                        b_set = set()
-                        for l in lookahead:
-                            b_set = b_set.union(grammar.firstSets[l])
-                    else:
-                        # check first(b)
-                        b_set = grammar.firstSets[item.derivation.rhs[index + 1]].copy()
-
-                    # update each [B -> .r, c] where c in first(ba)
-                    item_groups = itemMapping[next_symbol]
-                    for item_group in item_groups:
+                    for item_group in allItems:
                         derivation = item_group[0].derivation
                         if derivation.lhs == next_symbol:
-                            if item_group[0] in new_items:
-                                new_items[item_group[0]].update(b_set)
-                            else:
-                                new_items[item_group[0]] = b_set
+                            if item_group[0] not in self.items:
+                                new_items.add(item_group[0])
 
-            # update items
-            updated = False
-            for item, lookahead in new_items.items():
-                if item in self.items:
-                    if lookahead - self.items[item]:
-                        updated = True
-                        self.items[item].update(lookahead)
-                else:
-                    updated = True
-                    self.items[item] = lookahead
-
-            if not updated:
+            self.items.update(new_items)
+            if not new_items:
                 break
 
     def __repr__(self) -> str:
         return repr(self.items)
 
     def __hash__(self) -> int:
-        return sum(hash(item) + sum(hash(l) for l in lookahead)
-                   for item, lookahead in self.items.items())
+        return sum(hash(item) for item in self.items)
 
     def __eq__(self, __o: object) -> bool:
         return self.items == __o.items
@@ -105,15 +77,9 @@ class ViablePrefixDFA:
 
         # Get all items
         self.items = list()
-        self.itemMapping = dict()
         for derivation in grammar:
-            group = [Item(derivation, i)
-                     for i in range(len(derivation.rhs) + 1)]
-            self.items.append(group)
-            if derivation.lhs not in self.itemMapping:
-                self.itemMapping[derivation.lhs] = [group]
-            else:
-                self.itemMapping[derivation.lhs].append(group)
+            self.items.append([Item(derivation, i)
+                               for i in range(len(derivation.rhs) + 1)])
 
         # Create canonical collections of items & GO table
         self.go = list()
@@ -132,9 +98,8 @@ class ViablePrefixDFA:
         count = 0
 
         # Create the initial state
-        initial_state = DFAState(
-            [(self.items[0][0], {self.grammar.symbols['#$']})])
-        initial_state.updateClosure(self.itemMapping, self.grammar)
+        initial_state = DFAState({self.items[0][0]})
+        initial_state.updateClosure(self.items)
         self.states.append(initial_state)
         tmp_states[initial_state] = count
         unprocessed_states.append(initial_state)
@@ -145,22 +110,20 @@ class ViablePrefixDFA:
             state = unprocessed_states.popleft()
             go_for_state = dict()
             j_sets = dict()
-
-            for item, lookahead in state.items.items():
+            for item in state.items:
                 symbol = item.nextSymbol()
                 if symbol is not None:
                     derivationId = item.derivation.id
                     new_item = self.items[derivationId][item.index + 1]
                     if symbol in j_sets:
-                        j_sets[symbol].append((new_item, lookahead))
+                        j_sets[symbol].add(new_item)
                     else:
-                        j_sets[symbol] = [(new_item, lookahead)]
+                        j_sets[symbol] = {new_item}
 
             for symbol, j in j_sets.items():
                 new_state = DFAState(j)
-                new_state.updateClosure(self.itemMapping, self.grammar)
+                new_state.updateClosure(self.items)
                 if new_state not in tmp_states:
-                    # print(count, new_state)
                     self.states.append(new_state)
                     tmp_states[new_state] = count
                     unprocessed_states.append(new_state)
@@ -173,20 +136,19 @@ class ViablePrefixDFA:
         state = self.states[stateId]
         items = state.items
 
-        # [S' -> S., #$]: action[i, $] = accept
+        # S' -> S: action[i, $] = accept
         for item in items:
-            if item.derivation.id == 0 and item.index == 1:
-                if self.grammar.symbols['#$'].matchToken(token):
-                    return Action(0, 0)
+            if item.derivation.id == 0 and self.grammar.symbols['#$'].matchToken(token):
+                return Action(0, 0)
 
-        # [X -> a., t]: action[i, t] = reduce
-        for item, lookahead in items.items():
-            if item.nextSymbol() is None:
-                for symbol in lookahead:
+        # X -> a. && t in follow(X) && X != S': action[i, t] = reduce
+        for item in items:
+            if item.nextSymbol() is None and item.derivation.id != 0:
+                for symbol in self.grammar.followSets[item.derivation.lhs]:
                     if symbol.matchToken(token):
                         return Action(2, item.derivation.id)
 
-        # [X -> a.tb, ...] && go[i, t] = k: action[i, t] = shift
+        # X -> a.tb && go[i, t] = k: action[i, t] = shift k
         for item in items:
             nextSymbol = item.nextSymbol()
             if nextSymbol:
