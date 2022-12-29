@@ -52,6 +52,9 @@ def proc_macro(symbol: Symbol, builder: Builder, context: Context, proc: Callabl
         printf_type = ll.FunctionType(int_type, (voidptr_type, ), var_arg=True)
         ll.Function(context.module, printf_type, name='printf')
         ll.Function(context.module, printf_type, name='scanf')
+        sscanf_type = ll.FunctionType(int_type, (voidptr_type, voidptr_type), var_arg=True)
+        ll.Function(context.module, sscanf_type, name='sscanf')
+        ll.Function(context.module, sscanf_type, name='sprintf')
     elif name == 'cstring':
         char_ptr_type = ll.PointerType(char_type)
         strlen_type = ll.FunctionType(int_type, (char_ptr_type, ))
@@ -69,7 +72,6 @@ def proc_macro(symbol: Symbol, builder: Builder, context: Context, proc: Callabl
         ll.Function(context.module, strncat_type, name='strncat')
         ll.Function(context.module, strncat_type, name='strncpy')
 
-@handler('TYPE-SPECS')
 @handler('DECLARATORS')
 def proc_type_specs(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
     return [proc(s, builder, context) for s in symbol.symbols]
@@ -141,6 +143,34 @@ def proc_params(symbol: Symbol, builder: Builder, context: Context, proc: Callab
             'var': var_name[0]
         })
     return params
+
+
+@handler('CLS-ST')
+def proc_cls_st(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
+    class_name = symbol.symbols[1].token.value
+    params = list()
+    for st in symbol.symbols[3].symbols:
+        if st.name == 'DECL-ST':
+            # print(class_name, st)
+            type_specs, decls = st.symbols[0].symbols
+            types = proc(type_specs, builder, context)
+            declarators = proc(decls, builder, context)
+            var_type = type_dict[types[0].name]
+            for dec in declarators:
+                if 'size' in dec:
+                    var_type = ll.ArrayType(var_type, dec['size'][0].constant)
+                params.append({
+                    'type': var_type,
+                    'name': dec['name']
+                })
+
+    struct_type = ll.LiteralStructType([p['type'] for p in params])
+    context.globals[class_name] = {
+        'struct_type': struct_type,
+        'type': 'struct',
+        'name': class_name,
+        'var_list': [p['name'] for p in params]
+    }
 
 @handler('SEL-ST')
 def proc_sel_st(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
@@ -300,7 +330,15 @@ def proc_decl(symbol: Symbol, builder: Builder, context: Context, proc: Callable
         if len(symbol.symbols) == 3:
             raise NotImplemented
         types, declarators = (proc(s, builder, context) for s in symbol.symbols)
-        var_type = type_dict[types[0].name]
+        
+        t = types[0]
+        if hasattr(t, 'name'):
+            var_type = type_dict[t.name]
+            typename = t.name
+        else:
+            var_type = t['struct_type']
+            typename = t['name']
+
         for dec in declarators:
             if 'size' in dec:
                 var_type = ll.ArrayType(var_type, dec['size'][0].constant)
@@ -311,17 +349,30 @@ def proc_decl(symbol: Symbol, builder: Builder, context: Context, proc: Callable
                 var_global.initializer = init
                 context.globals[dec['name']] = {
                     'ptr': var_global,
-                    'type': str(var_type)
+                    'type': str(var_type),
+                    'typename': typename
                 }
             else:
                 # local
                 var_ptr = builder.alloca(var_type, name=dec['name'])
                 context.variables[dec['name']] = {
                     'ptr': var_ptr,
-                    'type': str(var_type)
+                    'type': str(var_type),
+                    'typename': typename
                 }
                 if 'init' in dec:
                     builder.store(dec['init'], var_ptr)
+
+@handler('TYPE-SPECS')
+def proc_type_specs(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
+    res = list()
+    for s in symbol.symbols:
+        if s.name == 'ID':
+            struct_type = fetchType(s.symbols[0].token.value, builder, context)
+            res.append(struct_type)
+        else:
+            res.append(proc(s, builder, context))
+    return res
 
 @handler('TYPE-SPEC')
 def proc_type_spec(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
@@ -342,10 +393,16 @@ def proc_id_decl(symbol: Symbol, builder: Builder, context: Context, proc: Calla
 def proc_lval(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
     if len(symbol.symbols) == 1:
         return fetchID(symbol.symbols[0].symbols[0].token.value, builder, context, True)
-    else:
+    elif len(symbol.symbols) == 4:
         # Array element
         i = proc(symbol.symbols[2], builder, context)
         return fetchArrayElem(symbol.symbols[0].symbols[0].token.value, i, builder, context, True)
+    else:
+        obj_name = symbol.symbols[0].symbols[0].token.value
+        attr_name = symbol.symbols[2].token.value
+        var_ptr = fetchID(obj_name, builder, context, True)
+        struct_id = fetchStructAttr(obj_name, attr_name, context)
+        return builder.gep(var_ptr, (ll.Constant(int_type, 0), struct_id))
 
 @handler('EXPR-L16')
 def proc_expr_l16(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
@@ -561,7 +618,15 @@ def proc_expr_l3(symbol: Symbol, builder: Builder, context: Context, proc: Calla
 
 @handler('EXPR-L2')
 def proc_expr_l2(symbol: Symbol, builder: Builder, context: Context, proc: Callable):       
-    if symbol.symbols[1].name == 'ARG-LIST':
+    if symbol.symbols[1].name == 'member-op':
+        obj_name = symbol.symbols[0].symbols[0].token.value
+        attr_name = symbol.symbols[2].token.value
+        var_ptr = fetchID(obj_name, builder, context, True)
+        struct_id = fetchStructAttr(obj_name, attr_name, context)
+        res = builder.gep(var_ptr, (ll.Constant(int_type, 0), struct_id))
+        return builder.load(res)
+    
+    elif symbol.symbols[1].name == 'ARG-LIST':
         # Function call
         func = fetchID(symbol.symbols[0].symbols[0].token.value, builder, context, True)
         params = proc(symbol.symbols[1], builder, context)
@@ -703,6 +768,24 @@ def fetchArrayElem(name: str, index: Any, builder: Builder, context: Context, pt
     if not ptr:
         res = builder.load(res)
     return res
+
+def fetchType(name: str, builder: Builder, context: Context, ptr: bool = False):
+    # Find the identifier in the symbol table
+    if name in context.globals:
+        return context.globals[name]
+    
+    raise SyntaxError("Type not found: {}".format(name))
+
+def fetchStructAttr(name: str, attr: str, context: Context):
+    if name in context.variables:
+        res = context.variables[name]['typename']
+    elif name in context.globals:
+        res = context.globals[name]['typename']
+    else:
+        raise SyntaxError("ID not found: {}".format(name))
+
+    index = context.globals[res]['var_list'].index(attr)
+    return ll.Constant(int_type, index)
 
 def toBoolean(val: Any, builder: Builder):
     if val.type == type_dict['char'] or val.type == type_dict['int']:

@@ -23,6 +23,7 @@ GRAMMAR = {
         'FUNC-ST',
         # 'TRY-ST',
         'EXPR-ST',
+        'CLS-ST',
 
         'FOR-COND',
         'INIT-LIST',
@@ -60,9 +61,6 @@ GRAMMAR = {
         'EXPR-L1',
 
         'LVAL',
-        'AR-INDICES',
-        'AR-INDEX',
-
         'ARG-LIST',
         'ARGS',
         'ID',
@@ -122,6 +120,9 @@ GRAMMAR = {
 
         'new',
         'delete',
+
+        'public',
+        'private',
 
         'comma',
         'colon',
@@ -195,11 +196,14 @@ GRAMMAR = {
         ('ST', 'FUNC-ST'),
         # ('ST', 'TRY-ST'),
         ('ST', 'EXPR-ST'),
+        ('ST', 'CLS-ST'),
 
         # Labeled statements
         ('LABEL-ST', 'id colon'),
         ('LABEL-ST', 'case EXPR colon'),
         ('LABEL-ST', 'default colon'),
+        ('LABEL-ST', 'public colon'),
+        ('LABEL-ST', 'private colon'),
 
         # Selection statements
         ('SEL-ST', 'if parenthesis::( EXPR parenthesis::) ST'),
@@ -249,8 +253,8 @@ GRAMMAR = {
         ('TYPE-SPECS', 'TYPE-SPEC TYPE-SPECS'),
         ('TYPE-SPECS', 'TYPE-SPEC'),
         ('TYPE-SPEC', 'namespace'),
-        ('TYPE-SPEC', 'class'),
-        ('TYPE-SPEC', 'struct'),
+        # ('TYPE-SPEC', 'class'),
+        # ('TYPE-SPEC', 'struct'),
         ('TYPE-SPEC', 'union'),
         ('TYPE-SPEC', 'enum'),
         ('TYPE-SPEC', 'auto'),
@@ -292,6 +296,10 @@ GRAMMAR = {
         ('PARAMS', 'DECL comma PARAMS'),
         ('PARAMS', 'DECL'),
 
+        # Class definition statements
+        ('CLS-ST', 'class id brace::{ STATEMENTS brace::} semicolon'),
+        ('CLS-ST', 'struct id brace::{ STATEMENTS brace::} semicolon'),
+
         # TODO: Try statements
 
         # Expression statements
@@ -310,6 +318,7 @@ GRAMMAR = {
 
         # Left value
         ('LVAL', 'ID'),
+        ('LVAL', 'ID member-op id'),
         ('LVAL', 'ID bracket::[ EXPR bracket::]'),
 
         # Level 15: ||, left to right
@@ -367,7 +376,7 @@ GRAMMAR = {
         ('EXPR-L3', 'EXPR-L2'),
 
         # Level 2: left to right
-        ('EXPR-L2', 'EXPR-L2 member-op EXPR-L1'),
+        ('EXPR-L2', 'ID member-op id'),
         ('EXPR-L2', 'EXPR-L2 ptr-member-op EXPR-L1'),
         ('EXPR-L2', 'EXPR-L2 ARG-LIST'),
         ('EXPR-L2', 'ID bracket::[ EXPR bracket::]'),
