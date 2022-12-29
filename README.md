@@ -147,15 +147,15 @@ chmod +x test.sh
 - 变量类型：char、bool、int、void、一维数组
 - 基本的函数定义，return 返回
 - if 语句
-- while、for（准备实现 do while），暂时未实现 break、continue
+- while、for、do while，暂时未实现 break、continue
 - 简单变量定义（如 `int b, c = 8;`）
-- 运算符：等号赋值、逻辑与或、按位与或非、带符号整数的大小比较、左移右移、带符号整数的加减乘除模、自增自减、变量取地址、函数调用、取数组元素、
+- 运算符：各种赋值运算、逻辑与或非、按位与或非、带符号整数的大小比较、左移右移、带符号整数的加减乘除模、自增自减、正负号、变量取地址、函数调用、取数组元素
 - 字面量：整数、字符串、字符、true、false
 
 ### 后续任务
 
 - 目前已经可以编译通过 sort.cpp、palindrome.cpp、kmp_pair.cpp 三个测试用例，这些用例已根据已实现的功能略微修改。
-- 看看还需要实现哪些重要功能，如 `+=` 赋值、break 等。
+- 看看还需要实现哪些重要功能，如 cstdlib 库、break 等。
 
 ## 附录：LLVM 环境搭建
 
