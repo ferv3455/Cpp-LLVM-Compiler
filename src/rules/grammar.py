@@ -208,7 +208,7 @@ GRAMMAR = {
 
         # Iteration statements
         ('ITER-ST', 'while parenthesis::( EXPR parenthesis::) ST'),
-        ('ITER-ST', 'do ST while parenthesis::( EXPR parenthesis::)'),
+        ('ITER-ST', 'do ST while parenthesis::( EXPR parenthesis::) semicolon'),
         ('ITER-ST', 'for parenthesis::( FOR-COND parenthesis::) ST'),
         ('FOR-COND', 'DECL semicolon EXPR semicolon EXPR'),  # FIXME
 

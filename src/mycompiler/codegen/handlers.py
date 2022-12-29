@@ -53,8 +53,21 @@ def proc_macro(symbol: Symbol, builder: Builder, context: Context, proc: Callabl
         ll.Function(context.module, printf_type, name='printf')
         ll.Function(context.module, printf_type, name='scanf')
     elif name == 'cstring':
-        strlen_type = ll.FunctionType(int_type, (ll.PointerType(char_type), ))
+        char_ptr_type = ll.PointerType(char_type)
+        strlen_type = ll.FunctionType(int_type, (char_ptr_type, ))
         ll.Function(context.module, strlen_type, name='strlen')
+        strcmp_type = ll.FunctionType(int_type, (char_ptr_type, char_ptr_type))
+        ll.Function(context.module, strcmp_type, name='strcmp')
+        strcat_type = ll.FunctionType(char_ptr_type, (char_ptr_type, char_ptr_type))
+        ll.Function(context.module, strcat_type, name='strcat')
+        ll.Function(context.module, strcat_type, name='strcpy')
+        strnlen_type = ll.FunctionType(int_type, (char_ptr_type, int_type))
+        ll.Function(context.module, strnlen_type, name='strnlen')
+        strncmp_type = ll.FunctionType(int_type, (char_ptr_type, char_ptr_type, int_type))
+        ll.Function(context.module, strncmp_type, name='strncmp')
+        strncat_type = ll.FunctionType(char_ptr_type, (char_ptr_type, char_ptr_type, int_type))
+        ll.Function(context.module, strncat_type, name='strncat')
+        ll.Function(context.module, strncat_type, name='strncpy')
 
 @handler('TYPE-SPECS')
 @handler('DECLARATORS')
@@ -218,6 +231,33 @@ def proc_iter_st(symbol: Symbol, builder: Builder, context: Context, proc: Calla
         # Move to end
         builder.position_at_end(end)
 
+    elif symbol.symbols[0].name == 'do':
+        expr = symbol.symbols[4]
+        st = symbol.symbols[1]
+
+        inner_context = context.addChild()
+
+        # Three blocks
+        body = builder.append_basic_block()
+        condition = builder.append_basic_block()
+        end = builder.append_basic_block()
+
+        # End of last block
+        builder.branch(body)
+
+        # Body block
+        builder.position_at_end(body)
+        proc(st, builder, inner_context)
+        builder.branch(condition)
+
+        # Condition block
+        builder.position_at_end(condition)
+        res = proc(expr, builder, inner_context)
+        builder.cbranch(res, body, end)
+
+        # Move to end
+        builder.position_at_end(end)
+
     else:
         raise SyntaxError("Not Implemented")
 
@@ -297,6 +337,42 @@ def proc_expr_l16(symbol: Symbol, builder: Builder, context: Context, proc: Call
         var_ptr = proc(symbol.symbols[0], builder, context)
         builder.store(value, var_ptr)
         return value
+    elif symbol.symbols[1].name == 'arithm-assign-op':
+        value = proc(symbol.symbols[2], builder, context)
+        var_ptr = proc(symbol.symbols[0], builder, context)
+        last = builder.load(var_ptr)
+        if symbol.symbols[1].token.value == '+=':
+            new_val = builder.add(last, value)
+        elif symbol.symbols[1].token.value == '-=':
+            new_val = builder.sub(last, value)
+        elif symbol.symbols[1].token.value == '*=':
+            new_val = builder.mul(last, value)
+        elif symbol.symbols[1].token.value == '/=':
+            new_val = builder.sdiv(last, value)
+        elif symbol.symbols[1].token.value == '%=':
+            new_val = builder.srem(last, value)
+        else:
+            raise SyntaxError("Not Implemented")
+        builder.store(new_val, var_ptr)
+        return value
+    elif symbol.symbols[1].name == 'bit-assign-op':
+        value = proc(symbol.symbols[2], builder, context)
+        var_ptr = proc(symbol.symbols[0], builder, context)
+        last = builder.load(var_ptr)
+        if symbol.symbols[1].token.value == '<<=':
+            new_val = builder.shl(last, value)
+        elif symbol.symbols[1].token.value == '>>=':
+            new_val = builder.ashr(last, value)
+        elif symbol.symbols[1].token.value == '&=':
+            new_val = builder.and_(last, value)
+        elif symbol.symbols[1].token.value == '^=':
+            new_val = builder.xor(last, value)
+        elif symbol.symbols[1].token.value == '|=':
+            new_val = builder.or_(last, value)
+        else:
+            raise SyntaxError("Not Implemented")
+        builder.store(new_val, var_ptr)
+        return value
     else:
         raise SyntaxError("Not Implemented")
 
@@ -334,7 +410,6 @@ def proc_expr_l11(symbol: Symbol, builder: Builder, context: Context, proc: Call
 def proc_expr_l10(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
     operator1 = proc(symbol.symbols[0], builder, context)
     operator2 = proc(symbol.symbols[2], builder, context)
-    # TODO
     return builder.icmp_signed(symbol.symbols[1].token.value, operator1, operator2)
 
 @handler('EXPR-L7')
@@ -344,7 +419,6 @@ def proc_expr_l7(symbol: Symbol, builder: Builder, context: Context, proc: Calla
     if symbol.symbols[1].token.value == '<<':
         return builder.shl(operator1, operator2)
     elif symbol.symbols[1].token.value == '>>':
-        # TODO
         return builder.ashr(operator1, operator2)
     else:
         raise SyntaxError("Not Implemented")
@@ -407,6 +481,22 @@ def proc_expr_l3(symbol: Symbol, builder: Builder, context: Context, proc: Calla
             name = lval.symbols[0].symbols[0].token.value
             index = proc(lval.symbols[2], builder, context)
             return fetchArrayElem(name, index, builder, context, True)
+
+    elif symbol.symbols[0].name == 'arithmetic-op':
+        # +/-
+        if symbol.symbols[0].token.value == '-':
+            return builder.neg(proc(symbol.symbols[1], builder, context))
+        else:
+            return proc(symbol.symbols[1], builder, context)
+
+    elif symbol.symbols[0].name == 'logical-op' and symbol.symbols[0].value == '!':
+        # !
+        val = toBoolean(proc(symbol.symbols[1], builder, context), builder)
+        return builder.icmp_signed('==', val, ll.Constant(val.type, 0))
+
+    elif symbol.symbols[0].name == 'bit-op' and symbol.symbols[0].value == '~':
+        # ~
+        return builder.not_(proc(symbol.symbols[1], builder, context))
 
     else:
         raise SyntaxError("Not Implemented")
