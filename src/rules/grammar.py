@@ -59,7 +59,12 @@ GRAMMAR = {
         'EXPR-L2',
         'EXPR-L1',
 
+        'LVAL',
+        'AR-INDICES',
+        'AR-INDEX',
+
         'ARG-LIST',
+        'ARGS',
         'ID',
         'OPERAND',
     ],
@@ -206,7 +211,6 @@ GRAMMAR = {
         ('ITER-ST', 'do ST while parenthesis::( EXPR parenthesis::)'),
         ('ITER-ST', 'for parenthesis::( FOR-COND parenthesis::) ST'),
         ('FOR-COND', 'DECL semicolon EXPR semicolon EXPR'),  # FIXME
-        ('FOR-COND', 'DECL semicolon EXPR semicolon EXPR'),  # FIXME
 
         # Jump statements
         ('JMP-ST', 'break semicolon'),
@@ -217,7 +221,7 @@ GRAMMAR = {
         ('JMP-ST', 'goto ID semicolon'),
 
         ('INIT-LIST', 'brace::{ brace::}'),
-        ('INIT-LIST', 'brace::{ EXPR brace::}'),
+        ('INIT-LIST', 'brace::{ ARGS brace::}'),
 
         # Compound statements
         ('CMPD-ST', 'brace::{ brace::}'),
@@ -274,12 +278,11 @@ GRAMMAR = {
         ('DECLARATORS', 'ID-DECL comma DECLARATORS'),
         ('DECLARATORS', 'ID-DECL'),
         ('ID-DECL', 'id'),
-        ('ID-DECL', 'id PARAM-LIST'),
+        # ('ID-DECL', 'id PARAM-LIST'),
         ('ID-DECL', 'id ARG-LIST'),
         ('ID-DECL', 'id assignment-op EXPR'),
         ('ID-DECL', 'id bracket::[  EXPR bracket::]'),
         ('ID-DECL', 'id bracket::[  EXPR bracket::] assignment-op INIT-LIST'),
-        ('ID-DECL', 'id assignment-op EXPR'),
 
         # Function definition statements
         ('FUNC-ST', 'TYPE-SPECS id PARAM-LIST CMPD-ST'),
@@ -300,10 +303,14 @@ GRAMMAR = {
         ('EXPR-L17', 'EXPR-L16'),
 
         # Level 16: assignment, right to left
-        ('EXPR-L16', 'EXPR-L15 assignment-op EXPR-L16'),
-        ('EXPR-L16', 'EXPR-L15 arithm-assign-op EXPR-L16'),
-        ('EXPR-L16', 'EXPR-L15 bit-assign-op EXPR-L16'),
+        ('EXPR-L16', 'LVAL assignment-op EXPR-L16'),
+        ('EXPR-L16', 'LVAL arithm-assign-op EXPR-L16'),
+        ('EXPR-L16', 'LVAL bit-assign-op EXPR-L16'),
         ('EXPR-L16', 'EXPR-L15'),
+
+        # Left value
+        ('LVAL', 'ID'),
+        ('LVAL', 'ID bracket::[ EXPR bracket::]'),
 
         # Level 15: ||, left to right
         ('EXPR-L15', 'EXPR-L15 logical-op::|| EXPR-L14'),
@@ -346,13 +353,13 @@ GRAMMAR = {
         ('EXPR-L5', 'EXPR-L3'),
 
         # Level 3: right to left
-        ('EXPR-L3', 'increment-op EXPR-L3'),
+        ('EXPR-L3', 'increment-op LVAL'),
         ('EXPR-L3', 'arithmetic-op::+ EXPR-L3'),
         ('EXPR-L3', 'arithmetic-op::- EXPR-L3'),
         ('EXPR-L3', 'logical-op::! EXPR-L3'),
         ('EXPR-L3', 'bit-op::~ EXPR-L3'),
         ('EXPR-L3', 'arithmetic-op::* EXPR-L3'),
-        ('EXPR-L3', 'bit-op::& EXPR-L3'),
+        ('EXPR-L3', 'bit-op::& LVAL'),
         ('EXPR-L3', 'new EXPR-L3'),
         ('EXPR-L3', 'new bracket::[ bracket::] EXPR-L3'),
         ('EXPR-L3', 'delete EXPR-L3'),
@@ -363,11 +370,13 @@ GRAMMAR = {
         ('EXPR-L2', 'EXPR-L2 member-op EXPR-L1'),
         ('EXPR-L2', 'EXPR-L2 ptr-member-op EXPR-L1'),
         ('EXPR-L2', 'EXPR-L2 ARG-LIST'),
-        ('EXPR-L2', 'EXPR-L2 bracket::[ EXPR bracket::]'),
-        ('EXPR-L2', 'EXPR-L2 increment-op'),
+        ('EXPR-L2', 'ID bracket::[ EXPR bracket::]'),
+        ('EXPR-L2', 'LVAL increment-op'),
         ('EXPR-L2', 'EXPR-L1'),
         ('ARG-LIST', 'parenthesis::( parenthesis::)'),
-        ('ARG-LIST', 'parenthesis::( EXPR parenthesis::)'),
+        ('ARG-LIST', 'parenthesis::( ARGS parenthesis::)'),
+        ('ARGS', 'ARGS comma EXPR'),
+        ('ARGS', 'EXPR'),
 
         # Level 1: double-colon, left to right
         ('EXPR-L1', 'ID'),

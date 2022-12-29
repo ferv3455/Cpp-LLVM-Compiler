@@ -3,6 +3,7 @@ import json
 
 from mycompiler.lexer import generateTokens
 from mycompiler.parser import generateAST
+from mycompiler.codegen import generateCode
 
 from rules import RULES, GRAMMAR
 
@@ -36,12 +37,16 @@ def main(args: argparse.Namespace) -> None:
                 # ast.printAST(file=fout)
             return
 
+        # Code generation
+        with open(args.output, "w") as fout:
+            generateCode(ast, fout)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Cpp-LLVM Compiler')
     parser.add_argument('input', type=str, help='input source code')
     parser.add_argument('-o', '--output', type=str,
-                        default='output', help='output file')
+                        default='output.ll', help='output file')
     parser.add_argument('-u', '--update', action='store_true',
                         help='rebuild all rules and grammar (update temporary files)')
     parser.add_argument('-l', '--lex', action='store_true',

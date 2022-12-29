@@ -1,13 +1,12 @@
-#include <iostream>
+#include <cstdio>
 #include <cstring>
-using namespace std;
 
-bool palindrome(string str)
+bool palindrome(char str[256])
 {
-    int len = str.length();
-    for(int i = 0; i < len / 2; i++)
+    int len = strlen(str);
+    for (int i = 0; i < len / 2; i++)
     {
-        if(str[i] != str[len - i - 1])
+        if (str[i] != str[len - i - 1])
         {
             return false;
         }
@@ -17,9 +16,11 @@ bool palindrome(string str)
 
 int main()
 {
-    string str;
-    cin >> str;
-    if(palindrome(str)) cout << "True" << endl;
-    else cout << "False" << endl;
+    char str[256];
+    scanf("%s", str);
+    if (palindrome(str))
+        printf("True\n");
+    else
+        printf("False\n");
     return 0;
 }

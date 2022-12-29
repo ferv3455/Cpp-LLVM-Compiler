@@ -134,6 +134,29 @@ chmod +x test.sh
 - **正确配置 LLVM 环境**（见文末附录）。
 - 测试：进入 `tutorial/` 目录，使用 `python codegen.py` 运行脚本，生成 LLVM IR 代码 `test.ll`。使用指令 `lli test.ll` 即可运行程序。**该程序是读取命令行参数的个数 `argc`，随后输出 `argc` 行 Hello world!**
 
+### 源代码编译步骤
+
+- 在**根目录下**运行 `python ./src/main.py ./examples/test.cpp`（**首次运行**需要添加 `-u` 标记，更新暂存的文法），即可得到编译结果 `output.ll`。
+- 使用 `lli output.ll` 即可运行程序。
+
+### 当前进展
+
+当前支持的功能如下：
+
+- include：cstdio 加载 printf、scanf，cstring 加载 strlen
+- 变量类型：char、bool、int、void、一维数组
+- 基本的函数定义，return 返回
+- if 语句
+- while、for（准备实现 do while），暂时未实现 break、continue
+- 简单变量定义（如 `int b, c = 8;`）
+- 运算符：等号赋值、逻辑与或、按位与或非、带符号整数的大小比较、左移右移、带符号整数的加减乘除模、自增自减、变量取地址、函数调用、取数组元素、
+- 字面量：整数、字符串、字符、true、false
+
+### 后续任务
+
+- 目前已经可以编译通过 sort.cpp、palindrome.cpp、kmp_pair.cpp 三个测试用例，这些用例已根据已实现的功能略微修改。
+- 看看还需要实现哪些重要功能，如 `+=` 赋值、break 等。
+
 ## 附录：LLVM 环境搭建
 
 > Adapted from https://clang.llvm.org/get_started.html .

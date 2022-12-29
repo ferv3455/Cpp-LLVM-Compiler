@@ -42,9 +42,9 @@ class Symbol:
             ['└─ ' if end[-1] else '├─ ']
 
         # Skip nodes with only one child
-        if not self.terminal and len(self.symbols) == 1:
-            self.symbols[0].printAST(end, **kwargs)
-            return
+        # if not self.terminal and len(self.symbols) == 1:
+        #     self.symbols[0].printAST(end, **kwargs)
+        #     return
 
         print('{}{}'.format(''.join(prefix_list), self), **kwargs)
         if not self.terminal:

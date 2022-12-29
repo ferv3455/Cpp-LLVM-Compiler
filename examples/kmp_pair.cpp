@@ -1,23 +1,23 @@
-#include<iostream>
-#include<cstdio>
-#include<cstring>
+#include <cstdio>
+#include <cstring>
 
-#define maxn 100005
-using namespace std;
-string pattern;
-string text;
-int pi[maxn];
+char pattern[256];
+char text[1024];
+int pi[256];
 
-void pi_cal(int len_p){
+void pi_cal(int len_p)
+{
     pi[1] = 0;
     int k = 0;
 
-    for(int q = 2; q <= len_p; q++){
-        while(k > 0 && k + 1 < len_p && pattern[k + 1] != pattern[q])
+    for (int q = 2; q <= len_p; q++)
+    {
+        while (k > 0 && k + 1 < len_p && pattern[k + 1] != pattern[q])
         {
             k = pi[k];
         }
-        if(k + 1 < len_p && pattern[k + 1] == pattern[q]){
+        if (k + 1 < len_p && pattern[k + 1] == pattern[q])
+        {
             k++;
         }
         pi[q] = k;
@@ -25,38 +25,42 @@ void pi_cal(int len_p){
     return;
 }
 
+void knuth_morris_pratt()
+{
 
-void knuth_morris_pratt(){
+    int len_p = strlen(pattern) - 1;
+    int len_t = strlen(text) - 1;
 
-    int len_p = pattern.length();
-    int len_t = text.length();
-
-    text = " " + text;
-    pattern = " " + pattern;
-    
     pi_cal(len_p);
 
     int q = 0;
-    for(int i = 1 ;i <= len_t; i++){
-        while(q > 0 && pattern[q + 1] != text[i]){
+    for (int i = 1; i <= len_t; i++)
+    {
+        while (q > 0 && pattern[q + 1] != text[i])
+        {
             q = pi[q];
         }
-        if(pattern[q + 1] == text[i]){
+        if (pattern[q + 1] == text[i])
+        {
             q++;
         }
-        if(q == len_p){
-            printf("Shift at %d.\n", i-len_p);
+        if (q == len_p)
+        {
+            printf("Shift at %d.\n", i - len_p);
             q = pi[q];
         }
     }
-    
+
     return;
 }
 
-int main(){
-    cin >> text;
-    cin >> pattern;
-    
+int main()
+{
+    text[0] = ' ';
+    pattern[0] = ' ';
+    scanf("%s", &text[1]);
+    scanf("%s", &pattern[1]);
+
     knuth_morris_pratt();
 
     return 0;
