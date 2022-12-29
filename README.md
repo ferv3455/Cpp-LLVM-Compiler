@@ -143,14 +143,14 @@ chmod +x test.sh
 
 当前支持的功能如下：
 
-- include：cstdio 加载 printf、scanf，cstring 加载 strlen
-- 变量类型：char、bool、int、void、一维数组
-- 基本的函数定义，return 返回
-- if 语句
-- while、for、do while，支持 break、continue
-- 简单变量定义（如 `int b, c = 8;`）
-- 运算符：各种赋值运算、逻辑与或非、按位与或非、带符号整数的大小比较、左移右移、带符号整数的加减乘除模、自增自减、正负号、变量取地址、函数调用、取数组元素
-- 字面量：整数、字符串、字符、true、false
+- `include`：支持 cstdio（printf、scanf）、cstring 库的常用函数；
+- 变量类型：`char`、`bool`、`int`、`void`（返回类型）、`double`、前述类型的一维数组；
+- 基本的函数定义，用 `return` 返回
+- `if` 语句；
+- `while`、`for`、`do while`，支持 `break`、`continue`；
+- 简单变量定义（如 `int b, c = 8;` 等），包括局部变量和全局变量；
+- 运算符：**能够按运算符的优先级进行处理**，包括各种赋值运算、逻辑与或非、按位与或非、带符号整数的大小比较、左移右移、带符号整数的加减乘除模、自增自减、正负号、变量取地址、函数调用、取数组元素等（**加减乘除等运算需要相同类型**）；
+- 字面量：整数、字符串、字符、`true`、`false`。
 
 ### 后续任务
 

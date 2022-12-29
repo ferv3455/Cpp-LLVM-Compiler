@@ -6,68 +6,128 @@ declare i32 @"printf"(i8* %".1", ...)
 
 declare i32 @"scanf"(i8* %".1", ...)
 
+@"input_number" = global [100 x i32] undef
+@"count" = global i32 0
 define i32 @"main"()
 {
 .2:
-  %"m" = alloca i32
-  %".3" = bitcast [3 x i8]* @"140070818012416" to i8*
-  %".4" = call i32 (i8*, ...) @"scanf"(i8* %".3", i32* %"m")
+  %"temp_number" = alloca i32
+  store i32 0, i32* %"temp_number"
+  %".4" = bitcast [3 x i8]* @"140434242243600" to i8*
+  %".5" = call i32 (i8*, ...) @"scanf"(i8* %".4", i32* @"count")
   %"i" = alloca i32
   store i32 0, i32* %"i"
-  br label %".6"
-.6:
-  %".10" = icmp ne i8 1, 0
-  br i1 %".10", label %".7", label %".8"
+  br label %".7"
 .7:
   %".12" = load i32, i32* %"i"
-  %".13" = bitcast [4 x i8]* @"140070818019936" to i8*
-  %".14" = call i32 (i8*, ...) @"printf"(i8* %".13", i32 %".12")
+  %".13" = load i32, i32* @"count"
+  %".14" = icmp slt i32 %".12", %".13"
+  br i1 %".14", label %".8", label %".10"
+.8:
+  %".16" = load i32, i32* %"i"
+  %".17" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".16"
+  %".18" = bitcast [3 x i8]* @"140434242259408" to i8*
+  %".19" = call i32 (i8*, ...) @"scanf"(i8* %".18", i32* %".17")
+  br label %".9"
+.9:
+  %".21" = load i32, i32* %"i"
+  %".22" = add i32 %".21", 1
+  store i32 %".22", i32* %"i"
+  br label %".7"
+.10:
+  %"i.1" = alloca i32
+  store i32 0, i32* %"i.1"
+  br label %".26"
+.26:
+  %".31" = load i32, i32* %"i.1"
+  %".32" = load i32, i32* @"count"
+  %".33" = icmp slt i32 %".31", %".32"
+  br i1 %".33", label %".27", label %".29"
+.27:
   %"j" = alloca i32
   store i32 0, i32* %"j"
-  br label %".16"
-.8:
-  ret i32 0
-.16:
-  %".21" = load i32, i32* %"j"
-  %".22" = load i32, i32* %"i"
-  %".23" = icmp sle i32 %".21", %".22"
-  br i1 %".23", label %".17", label %".19"
-.17:
-  %".25" = load i32, i32* %"j"
-  %".26" = bitcast [7 x i8]* @"140070818031600" to i8*
-  %".27" = call i32 (i8*, ...) @"printf"(i8* %".26", i32 %".25")
-  %".31" = load i32, i32* %"j"
-  %".32" = load i32, i32* %"i"
-  %".33" = sdiv i32 %".32", 2
-  %".34" = icmp sge i32 %".31", %".33"
-  br i1 %".34", label %".28", label %".29"
-.18:
-  %".39" = load i32, i32* %"j"
-  %".40" = add i32 %".39", 1
-  store i32 %".40", i32* %"j"
-  br label %".16"
-.19:
-  %".46" = load i32, i32* %"i"
-  %".47" = load i32, i32* %"m"
-  %".48" = icmp sge i32 %".46", %".47"
-  br i1 %".48", label %".43", label %".44"
+  br label %".36"
 .28:
-  br label %".19"
+  %".84" = load i32, i32* %"i.1"
+  %".85" = add i32 %".84", 1
+  store i32 %".85", i32* %"i.1"
+  br label %".26"
 .29:
-  br label %".30"
-.30:
-  br label %".18"
-.43:
-  br label %".8"
-.44:
-  br label %".45"
-.45:
-  %".52" = load i32, i32* %"i"
-  %".53" = add i32 %".52", 1
-  store i32 %".53", i32* %"i"
-  br label %".6"
+  %"i.2" = alloca i32
+  store i32 0, i32* %"i.2"
+  br label %".89"
+.36:
+  %".41" = load i32, i32* %"j"
+  %".42" = load i32, i32* @"count"
+  %".43" = load i32, i32* %"i.1"
+  %".44" = sub i32 %".42", %".43"
+  %".45" = sub i32 %".44", 1
+  %".46" = icmp slt i32 %".41", %".45"
+  br i1 %".46", label %".37", label %".39"
+.37:
+  %".51" = load i32, i32* %"j"
+  %".52" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".51"
+  %".53" = load i32, i32* %".52"
+  %".54" = load i32, i32* %"j"
+  %".55" = add i32 %".54", 1
+  %".56" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".55"
+  %".57" = load i32, i32* %".56"
+  %".58" = icmp sgt i32 %".53", %".57"
+  br i1 %".58", label %".48", label %".49"
+.38:
+  %".79" = load i32, i32* %"j"
+  %".80" = add i32 %".79", 1
+  store i32 %".80", i32* %"j"
+  br label %".36"
+.39:
+  br label %".28"
+.48:
+  %".60" = load i32, i32* %"j"
+  %".61" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".60"
+  %".62" = load i32, i32* %".61"
+  %"temp" = alloca i32
+  store i32 %".62", i32* %"temp"
+  %".64" = load i32, i32* %"j"
+  %".65" = add i32 %".64", 1
+  %".66" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".65"
+  %".67" = load i32, i32* %".66"
+  %".68" = load i32, i32* %"j"
+  %".69" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".68"
+  store i32 %".67", i32* %".69"
+  %".71" = load i32, i32* %"temp"
+  %".72" = load i32, i32* %"j"
+  %".73" = add i32 %".72", 1
+  %".74" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".73"
+  store i32 %".71", i32* %".74"
+  br label %".50"
+.49:
+  br label %".50"
+.50:
+  br label %".38"
+.89:
+  %".94" = load i32, i32* %"i.2"
+  %".95" = load i32, i32* @"count"
+  %".96" = icmp slt i32 %".94", %".95"
+  br i1 %".96", label %".90", label %".92"
+.90:
+  %".98" = load i32, i32* %"i.2"
+  %".99" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".98"
+  %".100" = load i32, i32* %".99"
+  %".101" = bitcast [4 x i8]* @"140434242354336" to i8*
+  %".102" = call i32 (i8*, ...) @"printf"(i8* %".101", i32 %".100")
+  br label %".91"
+.91:
+  %".104" = load i32, i32* %"i.2"
+  %".105" = add i32 %".104", 1
+  store i32 %".105", i32* %"i.2"
+  br label %".89"
+.92:
+  %".108" = bitcast [2 x i8]* @"140434242360320" to i8*
+  %".109" = call i32 (i8*, ...) @"printf"(i8* %".108")
+  ret i32 0
 }
 
-@"140070818012416" = internal constant [3 x i8] c"%d\00"
-@"140070818019936" = internal constant [4 x i8] c"%d\0a\00"
-@"140070818031600" = internal constant [7 x i8] c"   %d\0a\00"
+@"140434242243600" = internal constant [3 x i8] c"%d\00"
+@"140434242259408" = internal constant [3 x i8] c"%d\00"
+@"140434242354336" = internal constant [4 x i8] c"%d \00"
+@"140434242360320" = internal constant [2 x i8] c"\0a\00"

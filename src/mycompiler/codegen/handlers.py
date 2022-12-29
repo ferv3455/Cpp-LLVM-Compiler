@@ -358,20 +358,34 @@ def proc_expr_l16(symbol: Symbol, builder: Builder, context: Context, proc: Call
         value = proc(symbol.symbols[2], builder, context)
         var_ptr = proc(symbol.symbols[0], builder, context)
         last = builder.load(var_ptr)
-        if symbol.symbols[1].token.value == '+=':
-            new_val = builder.add(last, value)
-        elif symbol.symbols[1].token.value == '-=':
-            new_val = builder.sub(last, value)
-        elif symbol.symbols[1].token.value == '*=':
-            new_val = builder.mul(last, value)
-        elif symbol.symbols[1].token.value == '/=':
-            new_val = builder.sdiv(last, value)
-        elif symbol.symbols[1].token.value == '%=':
-            new_val = builder.srem(last, value)
+        if last.type == double_type:
+            if symbol.symbols[1].token.value == '+=':
+                new_val = builder.fadd(last, value)
+            elif symbol.symbols[1].token.value == '-=':
+                new_val = builder.fsub(last, value)
+            elif symbol.symbols[1].token.value == '*=':
+                new_val = builder.fmul(last, value)
+            elif symbol.symbols[1].token.value == '/=':
+                new_val = builder.fdiv(last, value)
+            elif symbol.symbols[1].token.value == '%=':
+                new_val = builder.frem(last, value)
+            else:
+                raise SyntaxError("Not Implemented")
         else:
-            raise SyntaxError("Not Implemented")
+            if symbol.symbols[1].token.value == '+=':
+                new_val = builder.add(last, value)
+            elif symbol.symbols[1].token.value == '-=':
+                new_val = builder.sub(last, value)
+            elif symbol.symbols[1].token.value == '*=':
+                new_val = builder.mul(last, value)
+            elif symbol.symbols[1].token.value == '/=':
+                new_val = builder.sdiv(last, value)
+            elif symbol.symbols[1].token.value == '%=':
+                new_val = builder.srem(last, value)
+            else:
+                raise SyntaxError("Not Implemented")
         builder.store(new_val, var_ptr)
-        return value
+        return new_val
     elif symbol.symbols[1].name == 'bit-assign-op':
         value = proc(symbol.symbols[2], builder, context)
         var_ptr = proc(symbol.symbols[0], builder, context)
@@ -389,7 +403,7 @@ def proc_expr_l16(symbol: Symbol, builder: Builder, context: Context, proc: Call
         else:
             raise SyntaxError("Not Implemented")
         builder.store(new_val, var_ptr)
-        return value
+        return new_val
     else:
         raise SyntaxError("Not Implemented")
 
@@ -427,7 +441,10 @@ def proc_expr_l11(symbol: Symbol, builder: Builder, context: Context, proc: Call
 def proc_expr_l10(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
     operator1 = proc(symbol.symbols[0], builder, context)
     operator2 = proc(symbol.symbols[2], builder, context)
-    return builder.icmp_signed(symbol.symbols[1].token.value, operator1, operator2)
+    if operator1.type == double_type or operator2.type == double_type:
+        return builder.fcmp_ordered(symbol.symbols[1].token.value, operator1, operator2)
+    else:
+        return builder.icmp_signed(symbol.symbols[1].token.value, operator1, operator2)
 
 @handler('EXPR-L7')
 def proc_expr_l7(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
@@ -444,25 +461,43 @@ def proc_expr_l7(symbol: Symbol, builder: Builder, context: Context, proc: Calla
 def proc_expr_l6(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
     operator1 = proc(symbol.symbols[0], builder, context)
     operator2 = proc(symbol.symbols[2], builder, context)
-    if symbol.symbols[1].token.value == '+':
-        return builder.add(operator1, operator2)
-    elif symbol.symbols[1].token.value == '-':
-        return builder.sub(operator1, operator2)
+    if operator1.type == double_type or operator2.type == double_type:
+        if symbol.symbols[1].token.value == '+':
+            return builder.fadd(operator1, operator2)
+        elif symbol.symbols[1].token.value == '-':
+            return builder.fsub(operator1, operator2)
+        else:
+            raise SyntaxError("Not Implemented")
     else:
-        raise SyntaxError("Not Implemented")
+        if symbol.symbols[1].token.value == '+':
+            return builder.add(operator1, operator2)
+        elif symbol.symbols[1].token.value == '-':
+            return builder.sub(operator1, operator2)
+        else:
+            raise SyntaxError("Not Implemented")
 
 @handler('EXPR-L5')
 def proc_expr_l5(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
     operator1 = proc(symbol.symbols[0], builder, context)
     operator2 = proc(symbol.symbols[2], builder, context)
-    if symbol.symbols[1].token.value == '*':
-        return builder.mul(operator1, operator2)
-    elif symbol.symbols[1].token.value == '/':
-        return builder.sdiv(operator1, operator2)
-    elif symbol.symbols[1].token.value == '%':
-        return builder.srem(operator1, operator2)
+    if operator1.type == double_type or operator2.type == double_type:
+        if symbol.symbols[1].token.value == '*':
+            return builder.fmul(operator1, operator2)
+        elif symbol.symbols[1].token.value == '/':
+            return builder.fdiv(operator1, operator2)
+        elif symbol.symbols[1].token.value == '%':
+            return builder.frem(operator1, operator2)
+        else:
+            raise SyntaxError("Not Implemented")
     else:
-        raise SyntaxError("Not Implemented")
+        if symbol.symbols[1].token.value == '*':
+            return builder.mul(operator1, operator2)
+        elif symbol.symbols[1].token.value == '/':
+            return builder.sdiv(operator1, operator2)
+        elif symbol.symbols[1].token.value == '%':
+            return builder.srem(operator1, operator2)
+        else:
+            raise SyntaxError("Not Implemented")
 
 @handler('EXPR-L3')
 def proc_expr_l3(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
@@ -481,10 +516,16 @@ def proc_expr_l3(symbol: Symbol, builder: Builder, context: Context, proc: Calla
             index = proc(lval.symbols[2], builder, context)
             last = fetchArrayElem(name, index, builder, context)
             dest = fetchArrayElem(name, index, builder, context, True)
-        if symbol.symbols[0].token.value == '++':
-            new_val = builder.add(last, ll.Constant(int_type, 1))
+        if last.type == double_type:
+            if symbol.symbols[0].token.value == '++':
+                new_val = builder.fadd(last, ll.Constant(double_type, 1))
+            else:
+                new_val = builder.fsub(last, ll.Constant(double_type, 1))
         else:
-            new_val = builder.sub(last, ll.Constant(int_type, 1))
+            if symbol.symbols[0].token.value == '++':
+                new_val = builder.add(last, ll.Constant(int_type, 1))
+            else:
+                new_val = builder.sub(last, ll.Constant(int_type, 1))
         builder.store(new_val, dest)
         return new_val
 
@@ -549,10 +590,16 @@ def proc_expr_l2(symbol: Symbol, builder: Builder, context: Context, proc: Calla
             index = proc(lval.symbols[2], builder, context)
             last = fetchArrayElem(name, index, builder, context)
             dest = fetchArrayElem(name, index, builder, context, True)
-        if symbol.symbols[1].token.value == '++':
-            new_val = builder.add(last, ll.Constant(int_type, 1))
+        if last.type == double_type:
+            if symbol.symbols[1].token.value == '++':
+                new_val = builder.fadd(last, ll.Constant(double_type, 1))
+            else:
+                new_val = builder.fsub(last, ll.Constant(double_type, 1))
         else:
-            new_val = builder.sub(last, ll.Constant(int_type, 1))
+            if symbol.symbols[1].token.value == '++':
+                new_val = builder.add(last, ll.Constant(int_type, 1))
+            else:
+                new_val = builder.sub(last, ll.Constant(int_type, 1))
         builder.store(new_val, dest)
         return last
 
@@ -610,6 +657,11 @@ def proc_str_lit(symbol: Symbol, builder: Builder, context: Context, proc: Calla
 def proc_char_lit(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
     val = ord(eval(symbol.token.value))
     return ll.Constant(char_type, val)
+
+@handler('float-lit')
+def proc_float_lit(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
+    val = float(symbol.token.value)
+    return ll.Constant(double_type, val)
 
 @handler('true')
 def proc_true(symbol: Symbol, builder: Builder, context: Context, proc: Callable):
