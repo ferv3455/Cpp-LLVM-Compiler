@@ -13,7 +13,7 @@ define i32 @"main"()
 .2:
   %"temp_number" = alloca i32
   store i32 0, i32* %"temp_number"
-  %".4" = bitcast [3 x i8]* @"140434242243600" to i8*
+  %".4" = bitcast [3 x i8]* @"139688834743312" to i8*
   %".5" = call i32 (i8*, ...) @"scanf"(i8* %".4", i32* @"count")
   %"i" = alloca i32
   store i32 0, i32* %"i"
@@ -26,7 +26,7 @@ define i32 @"main"()
 .8:
   %".16" = load i32, i32* %"i"
   %".17" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".16"
-  %".18" = bitcast [3 x i8]* @"140434242259408" to i8*
+  %".18" = bitcast [3 x i8]* @"139688834759120" to i8*
   %".19" = call i32 (i8*, ...) @"scanf"(i8* %".18", i32* %".17")
   br label %".9"
 .9:
@@ -113,7 +113,7 @@ define i32 @"main"()
   %".98" = load i32, i32* %"i.2"
   %".99" = getelementptr [100 x i32], [100 x i32]* @"input_number", i32 0, i32 %".98"
   %".100" = load i32, i32* %".99"
-  %".101" = bitcast [4 x i8]* @"140434242354336" to i8*
+  %".101" = bitcast [4 x i8]* @"139688834854048" to i8*
   %".102" = call i32 (i8*, ...) @"printf"(i8* %".101", i32 %".100")
   br label %".91"
 .91:
@@ -122,12 +122,12 @@ define i32 @"main"()
   store i32 %".105", i32* %"i.2"
   br label %".89"
 .92:
-  %".108" = bitcast [2 x i8]* @"140434242360320" to i8*
+  %".108" = bitcast [2 x i8]* @"139688834860032" to i8*
   %".109" = call i32 (i8*, ...) @"printf"(i8* %".108")
   ret i32 0
 }
 
-@"140434242243600" = internal constant [3 x i8] c"%d\00"
-@"140434242259408" = internal constant [3 x i8] c"%d\00"
-@"140434242354336" = internal constant [4 x i8] c"%d \00"
-@"140434242360320" = internal constant [2 x i8] c"\0a\00"
+@"139688834743312" = internal constant [3 x i8] c"%d\00"
+@"139688834759120" = internal constant [3 x i8] c"%d\00"
+@"139688834854048" = internal constant [4 x i8] c"%d \00"
+@"139688834860032" = internal constant [2 x i8] c"\0a\00"
