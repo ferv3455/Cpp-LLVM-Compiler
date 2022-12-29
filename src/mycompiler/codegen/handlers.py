@@ -182,22 +182,29 @@ def proc_iter_st(symbol: Symbol, builder: Builder, context: Context, proc: Calla
         # Initialization
         proc(s1, builder, inner_context)
 
-        # Three blocks
+        # Four blocks
         condition = builder.append_basic_block()
         body = builder.append_basic_block()
+        body_end = builder.append_basic_block()
         end = builder.append_basic_block()
+        inner_context.exit.append(end)       # break
+        inner_context.exit.append(body_end)  # continue
 
         # End of last block
         builder.branch(condition)
 
         # Condition block
         builder.position_at_end(condition)
-        res = proc(s2, builder, inner_context)
+        res = toBoolean(proc(s2, builder, inner_context), builder)
         builder.cbranch(res, body, end)
 
         # Body block
         builder.position_at_end(body)
         proc(st, builder, inner_context)
+        builder.branch(body_end)
+
+        # Body-end block
+        builder.position_at_end(body_end)
         proc(s3, builder, inner_context)
         builder.branch(condition)
 
@@ -214,13 +221,15 @@ def proc_iter_st(symbol: Symbol, builder: Builder, context: Context, proc: Calla
         condition = builder.append_basic_block()
         body = builder.append_basic_block()
         end = builder.append_basic_block()
+        inner_context.exit.append(end)       # break
+        inner_context.exit.append(body)      # continue
 
         # End of last block
         builder.branch(condition)
 
         # Condition block
         builder.position_at_end(condition)
-        res = proc(expr, builder, inner_context)
+        res = toBoolean(proc(expr, builder, inner_context), builder)
         builder.cbranch(res, body, end)
 
         # Body block
@@ -241,6 +250,8 @@ def proc_iter_st(symbol: Symbol, builder: Builder, context: Context, proc: Calla
         body = builder.append_basic_block()
         condition = builder.append_basic_block()
         end = builder.append_basic_block()
+        inner_context.exit.append(end)       # break
+        inner_context.exit.append(body)      # continue
 
         # End of last block
         builder.branch(body)
@@ -252,7 +263,7 @@ def proc_iter_st(symbol: Symbol, builder: Builder, context: Context, proc: Calla
 
         # Condition block
         builder.position_at_end(condition)
-        res = proc(expr, builder, inner_context)
+        res = toBoolean(proc(expr, builder, inner_context), builder)
         builder.cbranch(res, body, end)
 
         # Move to end
@@ -272,6 +283,12 @@ def proc_jmp_st(symbol: Symbol, builder: Builder, context: Context, proc: Callab
             return builder.ret_void();
         else:
             return builder.ret(proc(symbol.symbols[1], builder, context));
+
+    elif symbol.symbols[0].name == 'break':
+        builder.branch(context.exit[0])
+
+    elif symbol.symbols[0].name == 'continue':
+        builder.branch(context.exit[1])
 
     return None
 

@@ -7,6 +7,7 @@ class Context:
         self.block = None
         self.globals = dict()
         self.variables = dict()
+        self.exit = list()
 
     def addChild(self) -> 'Context':
         child = Context(self)
